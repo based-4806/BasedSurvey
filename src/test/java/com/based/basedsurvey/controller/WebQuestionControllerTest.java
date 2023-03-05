@@ -2,6 +2,7 @@ package com.based.basedsurvey.controller;
 
 import com.based.basedsurvey.BasedSurveyApplication;
 import com.based.basedsurvey.data.MultiplechoiceQuestion;
+import com.based.basedsurvey.data.OpenAnswerQuestion;
 import com.based.basedsurvey.data.Question;
 import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.QuestionRepository;
@@ -21,9 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.containsString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -44,13 +48,23 @@ public class WebQuestionControllerTest {
     public void setup(){
         var survey = new Survey();
         survey.setName("Test Survey");
-
-        var question = new MultiplechoiceQuestion();
-        question.setSurvey(survey);
-        question.setPrompt("Test Question");
-
         sr.save(survey);
-        qr.save(question);
+
+
+        {
+            var question = new MultiplechoiceQuestion();
+            question.setSurvey(survey);
+            question.setPrompt("Test Question");
+            qr.save(question);
+        }
+
+        {
+            var question = new OpenAnswerQuestion();
+            question.setSurvey(survey);
+            question.setPrompt("Open Answer Test Question");
+            qr.save(question);
+        }
+
     }
     @SneakyThrows
     @Test
@@ -75,5 +89,22 @@ public class WebQuestionControllerTest {
         log.info("Final result");
         this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(status().isOk());
 
+    }
+
+    @SneakyThrows
+    @Test
+    public void testOAQ() {
+        this.mockMvc.perform(get("/question/2")).andDo(print()).andExpect(
+                status().isOk()).andExpect(
+                        content().string(not(containsString("Question type not implemented"))))
+                .andExpect(
+                        content().string(containsString("Nothing else is needed for this type of question"))
+                );
+
+
+        // rename
+        assertEquals("Test Question", qr.findById(1).getPrompt()); //control
+        this.mockMvc.perform(post("/question/rename").param("id", "2").param("prompt", "Changed")).andExpect(status().isFound());
+        assertEquals("Changed", qr.findById(2).getPrompt());
     }
 }
