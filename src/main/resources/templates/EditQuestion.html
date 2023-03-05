@@ -51,6 +51,19 @@
       </form>
     </div>
     <p th:case="${T(com.based.basedsurvey.data.QuestionTypes).OPEN_ENDED}">Nothing else is needed for this type of question</p>
+    <div th:case="${T(com.based.basedsurvey.data.QuestionTypes).RANGE}" style="border: 1px solid">
+      <form method="post" th:action="@{/question/setBounds}">
+        <input type="hidden" name="id" th:value="${question.getId()}"/>
+        <p>Lower Bound (inclusive):
+          <label><input type="number" name="lower" th:value="${lower}"/></label>
+        </p>
+        <p>Upper Bound (inclusive):
+          <label><input type="number" name="upper" th:value="${upper}"/></label>
+        </p>
+        <button type="submit">Set</button>
+      </form>
+      <p>Note: if the upper bound is lower than the lower bound, both bounds will be set to the lower one.</p>
+    </div>
     <p th:case="*" >Question type not implemented</p>
   </div>
 </body>
