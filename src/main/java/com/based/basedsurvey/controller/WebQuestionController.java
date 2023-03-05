@@ -16,7 +16,7 @@ import java.util.List;
 @Log
 @Controller
 public class WebQuestionController {
-    private final String MULTIPLE_CHOICE_SHORT = "MCQ";
+    private final String MULTIPLE_CHOICE_SHORT = "MQC";
 
     SurveyRepository surveyRepository;
     QuestionRepository questionRepository;
