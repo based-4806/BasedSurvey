@@ -28,10 +28,6 @@ public class SurveyTest {
         this.survey = sr.findSurveyById(survey.getId());
 
     }
-    @After
-    public void close(){
-        sr.deleteAll();
-    }
 
     @Test
     public void testAll(){
