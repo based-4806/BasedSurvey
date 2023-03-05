@@ -16,8 +16,7 @@ import java.util.List;
 @Log
 @Controller
 public class WebQuestionController {
-    private final String MULTIPLE_CHOICE_SHORT = "MQC",
-    OPEN_ANSWER_QUESTION = "OAQ";
+
 
     SurveyRepository surveyRepository;
     QuestionRepository questionRepository;
@@ -104,12 +103,12 @@ public class WebQuestionController {
         model.addAttribute("survey", question.getSurvey());
         model.addAttribute("question", question);
         List<String> options = new ArrayList<>();
-        String type = "";
+        var type = QuestionTypes.OPEN_ENDED;
         if (question instanceof MultiplechoiceQuestion) {
             options = ((MultiplechoiceQuestion) question).getOptions();
-            type = MULTIPLE_CHOICE_SHORT;
+            type = QuestionTypes.MULTIPLE_CHOICE;
         } else if (question instanceof OpenAnswerQuestion) {
-            type = OPEN_ANSWER_QUESTION;
+            type = QuestionTypes.OPEN_ENDED;
         } else {
             log.warning(question+" type not implemented");
         }

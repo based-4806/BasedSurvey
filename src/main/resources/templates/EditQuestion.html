@@ -23,7 +23,7 @@
     </p>
   </form>
   <div th:switch="${type}">
-    <div th:case="'MQC'">
+<div th:case="${T(com.based.basedsurvey.data.QuestionTypes).MULTIPLE_CHOICE}">
       <table >
         <tr>
           <th>#</th>
@@ -50,7 +50,7 @@
         </p>
       </form>
     </div>
-    <p th:case="'OAQ'">Nothing else is needed for this type of question</p>
+    <p th:case="${T(com.based.basedsurvey.data.QuestionTypes).OPEN_ENDED}">Nothing else is needed for this type of question</p>
     <p th:case="*" >Question type not implemented</p>
   </div>
 </body>
