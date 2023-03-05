@@ -32,10 +32,6 @@ public class RangeQuestionTest {
 
         questionUnderTest = (RangeQuestion) repo.findById(question.getId());
     }
-    @After
-    public void close(){
-        repo.deleteAll();
-    }
     @Test
     public void testBounds(){
         assertEquals(0, questionUnderTest.getLow(),0.01f);

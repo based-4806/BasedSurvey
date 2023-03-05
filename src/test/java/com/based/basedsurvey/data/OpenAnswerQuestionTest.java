@@ -32,10 +32,6 @@ public class OpenAnswerQuestionTest {
 
         questionUnderTest = (OpenAnswerQuestion) repo.findById(question.getId());
     }
-    @After
-    public void close(){
-        repo.deleteAll();
-    }
 
     @Test
     public void testPrompt(){
