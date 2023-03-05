@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Based Survey</title>
+
+  <style>
+    table, th, td {
+      border: 1px solid;
+    }
+  </style>
+</head>
+<body>
+  <h1 th:text="'Question for Survey with ID:'+${survey.getId()}">Survey Info</h1>
+  <h2 th:text="'Question ID:'+${question.getId()}">Question ID</h2>
+  <form method="post" th:action="@{/question/rename}">
+    <input type="hidden" name="id" th:value="${question.getId()}"/>
+    <p>Prompt:
+      <label>
+        <input type="text" name="prompt" value="Original Name" th:value="${question.getPrompt()}"/>
+      </label>
+      <button type="submit">Update</button>
+    </p>
+  </form>
+  <div th:switch="${type}">
+    <div th:case="'MQC'">
+      <table >
+        <tr>
+          <th>#</th>
+          <th>Option</th>
+          <th>Delete</th>
+        </tr>
+        <tr th:each="option, iter : ${options}">
+          <td th:text="${iter.index}">Number</td>
+          <td th:text="${option}">option name</td>
+          <td>
+            <form method="post" th:action="@{/question/removeOption}">
+              <input type="hidden" name="id" th:value="${question.getId()}"/>
+              <input type="hidden" name="optionIndex" th:value="${iter.index}"/>
+              <button type="submit" >X</button>
+            </form>
+          </td>
+        </tr>
+      </table>
+      <form method="post" th:action="@{/question/addOption}">
+        <p>Add New Option:
+          <input type="hidden" name="id" th:value="${question.getId()}"/>
+          <label> <input type="text" name="option"/></label>
+          <button type="submit">Add</button>
+        </p>
+      </form>
+    </div>
+    <p th:case="*" >Question type not implemented</p>
+  </div>
+</body>
+</html>
