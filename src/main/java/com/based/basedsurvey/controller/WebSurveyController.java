@@ -38,7 +38,7 @@ public class WebSurveyController {
     }
 
     @PostMapping("survey/delete")
-    public String thing(@RequestParam Long id) {
+    public String deleteSurvey(@RequestParam Long id) {
         surveyRepository.deleteById(id);
         return "redirect:/";
     }
