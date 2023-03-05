@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/index.css}"/>
+    <meta charset="UTF-8">
+    <title>Based Survey</title>
+</head>
+<body>
+    <form method="post" th:action="@{/survey/create}">
+        <label for="surveyname">Create a new survey:</label><br>
+        <input type="text" id="surveyname" name="name" value="Mysurvey"><br>
+        <input type="submit" value="Submit">
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Survey</th>
+            <th scope="col">Delete</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Results</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="survey: ${surveys}">
+                <td th:text="${survey.getId()}"></td>
+                <td ><a th:href="${'/survey/'+ survey.getId()}" th:text="${survey.getName()}"></a></td>
+                <td >
+                    <form method="post" th:action="@{/survey/delete}" class="inline">
+                        <input type="hidden" name="id" th:value="${survey.getId()}">
+                        <button type="submit" name="submit_param" value="submit_value" class="link-button">
+                            X
+                        </button>
+                    </form>
+                </td>
+                <td >
+                    <form method="post" th:action="@{/survey/edit}" class="inline">
+                        <input type="hidden" name="id" th:value="${survey.getId()}">
+                        <button type="submit" name="submit_param" value="submit_value" class="link-button">
+                            O
+                        </button>
+                    </form>
+                </td>
+                <td >
+                    <form method="post" th:action="@{/survey/results}" class="inline">
+                        <input type="hidden" name="id" th:value="${survey.getId()}">
+                        <button type="submit" name="submit_param" value="submit_value" class="link-button">
+                            O
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
