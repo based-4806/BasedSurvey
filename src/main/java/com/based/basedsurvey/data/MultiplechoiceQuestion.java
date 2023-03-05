@@ -2,8 +2,9 @@ package com.based.basedsurvey.data;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.FetchType;
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +12,13 @@ import java.util.List;
 @Entity
 @Data
 public class MultiplechoiceQuestion extends Question{
-    @ElementCollection
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> options = new ArrayList<>();
 
-    @ElementCollection
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> responses = new ArrayList<>();
 }
