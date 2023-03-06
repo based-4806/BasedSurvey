@@ -16,8 +16,6 @@ import java.util.List;
 @Log
 @Controller
 public class WebQuestionController {
-
-
     SurveyRepository surveyRepository;
     QuestionRepository questionRepository;
     @Autowired
@@ -67,6 +65,19 @@ public class WebQuestionController {
         return "redirect:/question/"+id;
     }
 
+    @PostMapping("question/setBounds")
+    public String setBounds(@RequestParam float lower, @RequestParam float upper, @RequestParam long id){
+        var rq = getRQ(id);
+        if(upper<lower){
+            upper = lower;
+        }
+        rq.setHigh(upper);
+        rq.setLow(lower);
+        questionRepository.save(rq);
+
+        return "redirect:/question/"+id;
+    }
+
     /**
      * uses ORM to get a multiple choice question
      * @param id the id of the question
@@ -78,6 +89,19 @@ public class WebQuestionController {
             throw new IllegalArgumentException("Question of ID:" + id + " is not a multiple choice question");
         }
         return (MultiplechoiceQuestion)question;
+    }
+
+    /**
+     * uses ORM to get a range question
+     * @param id the id of the question
+     * @return the range  for that id
+     */
+    private RangeQuestion getRQ(long id){
+        var question = getQuestion(id);
+        if(!(question instanceof RangeQuestion)){
+            throw new IllegalArgumentException("Question of ID:" + id + " is not a range question");
+        }
+        return (RangeQuestion)question;
     }
 
     /**
@@ -104,16 +128,23 @@ public class WebQuestionController {
         model.addAttribute("question", question);
         List<String> options = new ArrayList<>();
         var type = QuestionTypes.OPEN_ENDED;
+        float lowerBound = 0, upperBound = 0;
         if (question instanceof MultiplechoiceQuestion) {
             options = ((MultiplechoiceQuestion) question).getOptions();
             type = QuestionTypes.MULTIPLE_CHOICE;
         } else if (question instanceof OpenAnswerQuestion) {
             type = QuestionTypes.OPEN_ENDED;
+        }else if (question instanceof RangeQuestion rq) {
+            type = QuestionTypes.RANGE;
+            lowerBound = rq.getLow();
+            upperBound = rq.getHigh();
         } else {
             log.warning(question+" type not implemented");
         }
         model.addAttribute("type", type);
         model.addAttribute("options", options);
+        model.addAttribute("lower", lowerBound);
+        model.addAttribute("upper", upperBound);
 
     }
 }

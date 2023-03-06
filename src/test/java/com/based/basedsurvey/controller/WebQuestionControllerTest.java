@@ -1,10 +1,7 @@
 package com.based.basedsurvey.controller;
 
 import com.based.basedsurvey.BasedSurveyApplication;
-import com.based.basedsurvey.data.MultiplechoiceQuestion;
-import com.based.basedsurvey.data.OpenAnswerQuestion;
-import com.based.basedsurvey.data.Question;
-import com.based.basedsurvey.data.Survey;
+import com.based.basedsurvey.data.*;
 import com.based.basedsurvey.repo.QuestionRepository;
 import com.based.basedsurvey.repo.SurveyRepository;
 import lombok.SneakyThrows;
@@ -65,6 +62,13 @@ public class WebQuestionControllerTest {
             qr.save(question);
         }
 
+        {
+            var question = new RangeQuestion();
+            question.setSurvey(survey);
+            question.setPrompt("Range Test Question");
+            qr.save(question);
+        }
+
     }
     @SneakyThrows
     @Test
@@ -106,5 +110,41 @@ public class WebQuestionControllerTest {
         assertEquals("Open Answer Test Question", qr.findById(2).getPrompt()); //control
         this.mockMvc.perform(post("/question/rename").param("id", "2").param("prompt", "Changed")).andExpect(status().isFound());
         assertEquals("Changed", qr.findById(2).getPrompt());
+    }
+
+
+    @SneakyThrows
+    @Test
+    public void testRange(){
+        this.mockMvc.perform(get("/question/3")).andDo(print()).andExpect(status().isOk());
+
+        // rename
+        assertEquals("Range Test Question",qr.findById(3).getPrompt()); //control
+        this.mockMvc.perform(post("/question/rename").param("id","3").param("prompt","Changed Range")).andExpect(status().isFound());
+        assertEquals("Changed Range",qr.findById(3).getPrompt());
+        RangeQuestion rangeQuestion= (RangeQuestion)qr.findById(3);
+        //check default bounds
+        assertEquals(0.0f, rangeQuestion.getLow(),0.001f);
+        assertEquals(0.0f, rangeQuestion.getHigh(),0.001f);
+        //set bounds
+        this.mockMvc.perform(post("/question/setBounds")
+                .param("lower","-10.0")
+                .param("upper","10.0")
+                .param("id","3")).andExpect(status().isFound());
+        rangeQuestion= (RangeQuestion)qr.findById(3);
+        assertEquals(-10.0f, rangeQuestion.getLow(), 0.001f);
+        assertEquals(10.0f, rangeQuestion.getHigh(), 0.001f);
+        //set invalid bounds
+        this.mockMvc.perform(post("/question/setBounds")
+                .param("lower","-10")
+                .param("upper","-200.0")
+                .param("id","3")).andExpect(status().isFound());
+        rangeQuestion= (RangeQuestion)qr.findById(3);
+        assertEquals(-10.0f, rangeQuestion.getLow(), 0.001f);
+        assertEquals(-10.0f, rangeQuestion.getHigh(), 0.001f);
+
+        log.info("Final result");
+        this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(status().isOk());
+
     }
 }
