@@ -37,9 +37,22 @@
     </tbody>
 </table>
 <form method="post" th:action="@{/survey/create}">
-    <label for="surveyname">New Multiple Choice Question:</label><br>
-    <input type="text" id="surveyname" name="name" value="Mysurvey"><br>
-    <input type="submit" value="Submit">
+    <p>New Multiple Choice Question:
+        <input type="hidden" name="id" th:value="${question.getId()}"/>
+        <button type="submit">Add</button>
+    </p>
+</form>
+<form method="post" th:action="@{/survey/create}">
+    <p>New Range Question:
+        <input type="hidden" name="id" th:value="${question.getId()}"/>
+        <button type="submit">Add</button>
+    </p>
+</form>
+<form method="post" th:action="@{/survey/create}">
+    <p>New Long Answer Question:
+        <input type="hidden" name="id" th:value="${question.getId()}"/>
+        <button type="submit">Add</button>
+    </p>
 </form>
 </body>
 </html>
