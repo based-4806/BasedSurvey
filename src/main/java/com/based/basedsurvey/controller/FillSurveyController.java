@@ -85,6 +85,8 @@ public class FillSurveyController {
             addResponse(q, values.get(index));
         }
 
+        surveyRepository.save(s);
+
         // return to home page
         return "redirect:/";
     }

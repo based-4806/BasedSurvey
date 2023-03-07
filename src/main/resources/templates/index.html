@@ -34,7 +34,7 @@
                     </form>
                 </td>
                 <td >
-                    <form method="post" th:action="@{/survey/edit}" class="inline">
+                    <form method="post" th:action="@{/survey/{id}/edit(id=${survey.getId()})}" class="inline">
                         <input type="hidden" name="id" th:value="${survey.getId()}">
                         <button type="submit" name="submit_param" value="submit_value" class="link-button">
                             O
