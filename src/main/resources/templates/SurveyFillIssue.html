@@ -10,13 +10,8 @@
 
 <h1 th:text="${surveyName}"></h1>
 
-<form action="#" th:action="@{'/survey/'+${surveyID}+'/answer'}" th:object="${response}" method="post">
-  <div>
-    [(${questions})]
-  </div>
-  <p><input type="submit" value="Submit Answers" /></p>
-</form>
-<br>
+<p th:text="${issue}"></p>
+
 <button type="button">
   <a th:href="@{/}">Return Home</a>
 </button>

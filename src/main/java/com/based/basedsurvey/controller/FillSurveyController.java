@@ -1,6 +1,5 @@
 package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.*;
-import com.based.basedsurvey.repo.QuestionRepository;
 import com.based.basedsurvey.repo.SurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,84 +16,139 @@ public class FillSurveyController {
     SurveyRepository surveyRepository;
 
     @Autowired
-    public FillSurveyController(SurveyRepository surveyRepository){
+    public FillSurveyController(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
     }
 
     @GetMapping("/survey/{surveyID}/answer")
-    public String getAnswer(@PathVariable String surveyID, Model model) {
-        model.addAttribute("surveyID", surveyID);
-        Survey s = surveyRepository.findSurveyById(Long.parseLong(surveyID));
+    public String getAnswer(@PathVariable Long surveyID, Model model) {
+        // if survey does not exist
+        if (!surveyRepository.existsById(surveyID)) {
+            model.addAttribute("issue", "Survey does not exist");
+            return "SurveyFillIssue";
+        }
 
+        model.addAttribute("surveyID", surveyID);
+        Survey s = this.surveyRepository.findSurveyById(surveyID);
         model.addAttribute("surveyName", s.getName());
 
+        // if survey is closed
+        if (!s.isOpen()) {
+            model.addAttribute("issue", "Survey is closed");
+            return "SurveyFillIssue";
+        }
 
-        if(s.getQuestions().size() == 0){
-            model.addAttribute("empty_or_not", true);
-            return "Answer";
+        // if survey has no questions
+        if (s.getQuestions().size() == 0) {
+            model.addAttribute("issue", "Survey has no questions");
+            return "SurveyFillIssue";
         }
 
         // formInputs will contain a dynamically generated string with all the html form inputs
         String formInputs = "";
 
         // for each question in survey
-        for(int index = 0; index < s.getQuestions().size(); index+=1){
-            Question q = s.getQuestions().get(index);
+        for (Question q : s.getQuestions()) {
 
             // case 1, the question is a multiple choice question
-            if(q instanceof MultiplechoiceQuestion){
-                formInputs += "<h3> "+q.getPrompt()+" </h3>";
-                for(String option: ((MultiplechoiceQuestion) q).getOptions()){
-                    formInputs += "<input type=\"radio\" id=\""+option+"\" name=\"values\" checked=\"checked\" value=\""+option+"\">";
-                    formInputs += "<label for=\""+option+"\">"+option+"</label><br>";
-                }
-                formInputs += "<br>";
+            if (q instanceof MultiplechoiceQuestion) {
+                formInputs += getMultipleChoiceInputs((MultiplechoiceQuestion) q);
 
                 // case 2, the question is an open answer question
-            }else if(q instanceof OpenAnswerQuestion){
-                formInputs += "<h3>"+q.getPrompt()+"</h3>";
-                formInputs += "<input type=\"text\" id=\"values\" name=\"values\"><br>";
+            } else if (q instanceof OpenAnswerQuestion) {
+                formInputs += getOpenAnswerInput((OpenAnswerQuestion) q);
 
                 // case 3, the question is a range question
-            }else if(q instanceof RangeQuestion){
-                formInputs += "<h3>"+q.getPrompt()+"</h3>";
-                formInputs += "<input type=\"range\" name=\"values\" value=\""+((RangeQuestion) q).getLow()+"\" min=\""+((RangeQuestion) q).getLow()+"\" max=\""+((RangeQuestion) q).getHigh()+"\" step=\"0.1\" oninput=\"this.nextElementSibling.value = this.value\">\n";
-                formInputs += "<output>"+((RangeQuestion) q).getLow()+"</output>";
+            } else if (q instanceof RangeQuestion) {
+                formInputs += getRangeInput((RangeQuestion) q);
             }
         }
 
-        model.addAttribute("empty_or_not", false);
         model.addAttribute("questions", formInputs);
         return "Answer";
     }
 
     // side note, html forms can't send patch requests and I used post instead
     @PostMapping("/survey/{surveyID}/answer")
-    public String postAnswer(@PathVariable String surveyID, @RequestParam List<String> values, Model model) {
-        System.out.println("GOT HERE");
-        Survey s = surveyRepository.findSurveyById(Long.parseLong(surveyID));
+    public String postAnswer(@PathVariable Long surveyID, @RequestParam List<String> values, Model model) {
+        // if survey does not exist
+        if (!surveyRepository.existsById(surveyID)) {
+            model.addAttribute("issue", "Survey does not exist");
+            return "SurveyFillIssue";
+        }
 
-        // for each question in survey
-        for(int index = 0; index < s.getQuestions().size(); index+=1){
+        Survey s = this.surveyRepository.findSurveyById(surveyID);
+
+        // for each question in survey add the response
+        for (int index = 0; index < s.getQuestions().size(); index += 1) {
             Question q = s.getQuestions().get(index);
-
-            // case 1, the question is a multiple choice question
-            if(q instanceof MultiplechoiceQuestion multiChoice){
-                multiChoice.getResponses().add(((MultiplechoiceQuestion) q).getOptions().indexOf(values.get(index)));
-
-                // case 2, the question is an open answer question
-            }else if(q instanceof OpenAnswerQuestion openAnswer){
-                openAnswer.getResponses().add(values.get(index));
-
-                // case 3, the question is a range question
-            }else if(q instanceof RangeQuestion rangeAnswer){
-                rangeAnswer.getResponses().add(Float.parseFloat(values.get(index)));
-            }
+            addResponse(q, values.get(index));
         }
 
         // return to home page
-        model.addAttribute("surveys", surveyRepository.findAll());
-        return "index";
+        return "redirect:/";
+    }
+
+    /**
+     * Adds the response to a question
+     * @param q the question to add the response to
+     * @param value the value of the response
+     */
+    private void addResponse(Question q, String value) {
+
+        //case 1, the question is a multiple choice question
+        if (q instanceof MultiplechoiceQuestion multiChoice) {
+            multiChoice.getResponses().add(((MultiplechoiceQuestion) q).getOptions().indexOf(value));
+
+            // case 2, the question is an open answer question
+        } else if (q instanceof OpenAnswerQuestion openAnswer) {
+            openAnswer.getResponses().add(value);
+
+            // case 3, the question is a range question
+        } else if (q instanceof RangeQuestion rangeAnswer) {
+            rangeAnswer.getResponses().add(Float.parseFloat(value));
+        }
+    }
+
+    /**
+     * Generates the HTML inputs for a multiple choice question
+     * @param q the multiple choice question
+     * @return the HTML inputs for the question
+     */
+    private String getMultipleChoiceInputs(MultiplechoiceQuestion q) {
+        String s = "";
+        s += "<h3> " + q.getPrompt() + " </h3>";
+        for (String option : (q).getOptions()) {
+            s += "<input type=\"radio\" id=\"" + option + "\" name=\"values\" checked=\"checked\" value=\"" + option + "\">";
+            s += "<label for=\"" + option + "\">" + option + "</label><br>";
+        }
+        s += "<br>";
+        return s;
+    }
+
+    /**
+     * Generates the HTML inputs for an open answer question
+     * @param q the open answer question
+     * @return the HTML inputs for the question
+     */
+    private String getOpenAnswerInput(OpenAnswerQuestion q) {
+        String s = "";
+        s += "<h3>" + q.getPrompt() + "</h3>";
+        s += "<input type=\"text\" id=\"values\" name=\"values\"><br>";
+        return s;
+    }
+
+    /**
+     * Generates the HTML inputs for a range question
+     * @param q the range question
+     * @return the HTML inputs for the question
+     */
+    private String getRangeInput(RangeQuestion q) {
+        String s = "";
+        s += "<h3>" + q.getPrompt() + "</h3>";
+        s += "<input type=\"range\" name=\"values\" value=\"" + (q).getLow() + "\" min=\"" + (q).getLow() + "\" max=\"" + (q).getHigh() + "\" step=\"0.1\" oninput=\"this.nextElementSibling.value = this.value\">\n";
+        s += "<output>" + (q).getLow() + "</output>";
+        return s;
     }
 }
 
