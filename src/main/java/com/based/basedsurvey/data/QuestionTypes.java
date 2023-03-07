@@ -6,5 +6,20 @@ package com.based.basedsurvey.data;
 public enum QuestionTypes {
     MULTIPLE_CHOICE,
     RANGE,
-    OPEN_ENDED
+    OPEN_ENDED;
+
+    public static Question makeQuestionFromType(QuestionTypes qt){
+
+        switch(qt){
+            case MULTIPLE_CHOICE:
+                return new MultiplechoiceQuestion();
+            case RANGE:
+                return new RangeQuestion();
+            case OPEN_ENDED:
+                return new OpenAnswerQuestion();
+            default:
+                throw new IllegalArgumentException("cringe");
+
+        }
+    }
 }

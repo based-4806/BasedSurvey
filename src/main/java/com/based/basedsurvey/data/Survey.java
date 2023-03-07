@@ -13,6 +13,7 @@ public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @NonNull
     private String name;
     private boolean open;
 
