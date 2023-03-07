@@ -73,6 +73,7 @@ public class WebQuestionControllerTest {
     @SneakyThrows
     @Test
     public void testMcq(){
+        this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(status().isOk());
 
         // rename
         assertEquals("Test Question",qr.findById(1).getPrompt()); //control
