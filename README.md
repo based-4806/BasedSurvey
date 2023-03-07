@@ -36,6 +36,7 @@
 - Why?
 - When?
 - How?
+
 There's so many important questions that need to be asked, but since the dawn of civilization people have been forced to ask them in cringe ways.
 Here at based-4806 we decided to think different. We decided to think **BASED**.
 BasedSurvey is a platform to make, edit, analyze and answer surveys in a non-cringe way. 
