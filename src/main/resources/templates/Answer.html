@@ -1,0 +1,42 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Getting Started: Serving Web Content</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+<h1 th:text="${surveyName}"></h1>
+
+<div th:with="expr_result = ${empty_or_not}">
+<!--  if survey had no questions -->
+  <div th:if="${expr_result}">
+    Survey has no questions
+    <br>
+    <br>
+    <button onclick="window.location.href='http://localhost:8080/';">
+      Return Home
+    </button>
+  </div>
+
+  <!--  else if survey had questions  -->
+  <div th:unless="${expr_result}">
+    <!--side note, I could not set method="patch" since html forms can't send patch requests-->
+    <form action="#" th:action="@{'/survey/'+${surveyID}+'/answer'}" th:object="${response}" method="post">
+      <div>
+        [(${questions})]
+      </div>
+      <p><input type="submit" value="Submit Answers" /></p>
+    </form>
+
+    <br>
+    <button onclick="window.location.href='http://localhost:8080/';">
+      Return Home
+    </button>
+  </div>
+</div>
+
+</body>
+</html>
