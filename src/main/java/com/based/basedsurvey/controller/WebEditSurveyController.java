@@ -50,8 +50,10 @@ public class WebEditSurveyController {
     public String deleteQuestion(@RequestParam long questionID, @RequestParam long surveyID) {
         var survey = getSurvey(surveyID);
         var question = getQuestion(questionID);
+        log.info("Size of survey: " + survey.getQuestions().size());
         survey.getQuestions().remove(question);
         surveyRepository.save(survey);
+        log.info("Size of survey: " + survey.getQuestions().size());
         return "redirect:/survey/"+surveyID +"/edit";
     }
 
