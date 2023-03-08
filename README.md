@@ -60,9 +60,10 @@ on unix systems
 Go to the based homepage and start using it
 
 ## Database Schema
-View the documentation folder
+![db_schema](https://user-images.githubusercontent.com/72260849/223790794-3fad6401-026b-4901-a7bd-83114ca2df52.png)
 ## UML for Model
-View the documentation folder
+![Milestone1DataUml](https://user-images.githubusercontent.com/72260849/223790843-0f70ca34-015c-4355-bd9d-903476dca5a4.png)
+
 
 ## Early Prototype Progress
 Met all functional requirements for the assignment. The website has pages for viewing surveys, filling them out, viewing results and making surveys.
