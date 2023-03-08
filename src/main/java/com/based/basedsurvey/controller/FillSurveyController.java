@@ -73,10 +73,6 @@ public class FillSurveyController {
     // side note, html forms can't send patch requests and I used post instead
     @PostMapping("/survey/{surveyID}/answer")
     public String postAnswer(@PathVariable Long surveyID, @RequestParam List<String> values, Model model) {
-        System.out.println("BBBBBBBBBBBBBBBBBB" + values);
-        log.info("BBBBBBBBBBBBBBBBBB" + values);
-
-
 
         // if survey does not exist
         if (!surveyRepository.existsById(surveyID)) {
@@ -107,17 +103,14 @@ public class FillSurveyController {
 
         //case 1, the question is a multiple choice question
         if (q instanceof MultiplechoiceQuestion multiChoice) {
-            System.out.println("GGGGGGGGGGGGGGGGG" + value);
             multiChoice.getResponses().add(((MultiplechoiceQuestion) q).getOptions().indexOf(value));
 
             // case 2, the question is an open answer question
         } else if (q instanceof OpenAnswerQuestion openAnswer) {
-            System.out.println("HHHHHHHHHHHHHHHHHHH" + value);
             openAnswer.getResponses().add(value);
 
             // case 3, the question is a range question
         } else if (q instanceof RangeQuestion rangeAnswer) {
-            System.out.println("JJJJJJJJJJJJJ" + value);
             rangeAnswer.getResponses().add(Float.parseFloat(value));
         }
     }
