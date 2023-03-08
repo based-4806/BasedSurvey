@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/index.css}"/>
+    <meta charset="UTF-8">
+    <title>Based Survey</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Survey</h1>
+    <h2 th:text="'Survey ID: '+${survey.getId()}">Survey ID</h2>
+    <h2 th:text="'Survey Name: '+${survey.getName()}">Survey Name</h2>
+    <form method="post" th:action="@{/survey/rename}">
+        <input type="hidden" name="id" th:value="${survey.getId()}"/>
+        <p>Prompt:
+            <label>
+                <input type="text" name="prompt" value="Original Name" th:value="${survey.getName()}"/>
+            </label>
+            <button type="submit">Update</button>
+        </p>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Question</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="question: ${questions}">
+            <td th:text="${question.getId()}"></td>
+            <td><a th:href="@{/question/{q}(q=${question.getId()})}" th:text="${question.getPrompt()}"></a></td>
+            <td>
+                <form method="post" th:action="@{/question/delete}">
+                    <input type="hidden" name="surveyID" th:value="${survey.getId()}"/>
+                    <input type="hidden" name="questionID" th:value="${question.getId()}"/>
+                    <button type="submit" >X</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <form method="post" th:action="@{/question/create}">
+        <h1>Make a New Based Question</h1>
+        <p>Name:
+            <input type ="text" name = "prompt" value = "New Based Question"/>
+            <input type="hidden" name="surveyID" th:value="${survey.getId()}"/>
+        </p>
+        <p>
+            <select name="qt">
+                <option th:each="type : ${T(com.based.basedsurvey.data.QuestionTypes).values()}"
+                        th:value="${type}" th:text="${type.toString()}"></option>
+            </select>
+            <button type="submit">Add</button></p>
+    </form>
+
+</body>
+</html>
