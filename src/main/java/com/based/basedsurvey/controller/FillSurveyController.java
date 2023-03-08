@@ -1,6 +1,7 @@
 package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.*;
 import com.based.basedsurvey.repo.SurveyRepository;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
+@Log
 @Controller
 public class FillSurveyController {
 
-    SurveyRepository surveyRepository;
+    private SurveyRepository surveyRepository;
 
     @Autowired
     public FillSurveyController(SurveyRepository surveyRepository) {
@@ -71,6 +73,11 @@ public class FillSurveyController {
     // side note, html forms can't send patch requests and I used post instead
     @PostMapping("/survey/{surveyID}/answer")
     public String postAnswer(@PathVariable Long surveyID, @RequestParam List<String> values, Model model) {
+        System.out.println("BBBBBBBBBBBBBBBBBB" + values);
+        log.info("BBBBBBBBBBBBBBBBBB" + values);
+
+
+
         // if survey does not exist
         if (!surveyRepository.existsById(surveyID)) {
             model.addAttribute("issue", "Survey does not exist");
@@ -100,14 +107,17 @@ public class FillSurveyController {
 
         //case 1, the question is a multiple choice question
         if (q instanceof MultiplechoiceQuestion multiChoice) {
+            System.out.println("GGGGGGGGGGGGGGGGG" + value);
             multiChoice.getResponses().add(((MultiplechoiceQuestion) q).getOptions().indexOf(value));
 
             // case 2, the question is an open answer question
         } else if (q instanceof OpenAnswerQuestion openAnswer) {
+            System.out.println("HHHHHHHHHHHHHHHHHHH" + value);
             openAnswer.getResponses().add(value);
 
             // case 3, the question is a range question
         } else if (q instanceof RangeQuestion rangeAnswer) {
+            System.out.println("JJJJJJJJJJJJJ" + value);
             rangeAnswer.getResponses().add(Float.parseFloat(value));
         }
     }
