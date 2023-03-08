@@ -27,7 +27,7 @@ public class ResultsSurveyControllerTest {
 
     @Test
     public void testInvalidSurveyIDResults() throws Exception{
-        mockMvc.perform(get("/survey/1/results"))
+        mockMvc.perform(get("/survey/9999/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Survey does not exist")));
@@ -35,8 +35,9 @@ public class ResultsSurveyControllerTest {
 
     @Test
     public void testEmptyQuestionResults() throws Exception{
-        surveyRepository.save(new Survey());
-        mockMvc.perform(get("/survey/1/results"))
+        Survey s = new Survey();
+        surveyRepository.save(s);
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Survey has no questions")));
@@ -70,7 +71,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/1/results"))
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -101,7 +102,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/1/results"))
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -117,8 +118,7 @@ public class ResultsSurveyControllerTest {
         String prompt = "Choose a value:";
         float low = -1f;
         float high = 6f;
-        RangeQuestion q = new RangeQuestion();
-        q.setPrompt(prompt);
+        RangeQuestion q = new RangeQuestion(prompt, low, high);
 
         List<Float> responses = new ArrayList<>();
         responses.add(-1f);
@@ -134,13 +134,13 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/1/results"))
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
                 .andExpect(content().string(containsString(prompt)))
-                .andExpect(content().string(containsString("<tr><td>-1.00 to 0.00</td><td>▬</td><td></td></tr>")))
-                .andExpect(content().string(containsString("<tr><td>4.00 to 5.00</td><td>▬</td><td>▬</td></tr>")));
+                .andExpect(content().string(containsString("<tr><td>[-1.00, 0.00)</td><td>▬</td><td></td></tr>")))
+                .andExpect(content().string(containsString("<tr><td>[4.00, 5.00)</td><td>▬</td><td>▬</td></tr>")));
     }
 
 
