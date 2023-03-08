@@ -1,0 +1,22 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Survey Results</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+<h1 th:text="'Results: '+${surveyName}"></h1>
+
+<div>
+  [(${results})]
+</div>
+
+<button type="button">
+  <a th:href="@{/}">Return Home</a>
+</button>
+
+</body>
+</html>
