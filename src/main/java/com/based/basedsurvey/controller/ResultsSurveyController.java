@@ -14,6 +14,7 @@ import java.util.*;
 @Controller
 public class ResultsSurveyController {
     private SurveyRepository surveyRepository;
+    public final int NUM_BINS = 7; //arbitrary number for demonstration purposes
 
     @Autowired
     public ResultsSurveyController(SurveyRepository surveyRepository) {
@@ -76,7 +77,13 @@ public class ResultsSurveyController {
         }
 
         for (int i = 0; i < q.getOptions().size(); i++) {
-            s += "<p>" + q.getOptions().get(i) + ": " + String.format("%.2f", ((100.0f * responseCounts.get(i)) / q.getResponses().size())) + "%</p>";
+            s += "<p>" + q.getOptions().get(i) + ": ";
+            if (q.getResponses().isEmpty()) {
+                s += "0.00%</p>";
+            }
+            else {
+                s += String.format("%.2f", ((100.0f * responseCounts.get(i)) / q.getResponses().size())) + "%</p>";
+            }
         }
         s += "<br>";
         return s;
@@ -91,8 +98,13 @@ public class ResultsSurveyController {
         String s = "";
         //doesn't quite work, but this should probably be done with css
         s += "<h3>" + q.getPrompt() + "</h3><div height='200px' overflow='scroll'>"; // could specify a class/id for the div
-        for (String response : q.getResponses()) {
-            s += "<div>" + response + "</div>";
+        if (q.getResponses().isEmpty()) {
+            s += "<div>No responses.</div>";
+        }
+        else {
+            for (String response : q.getResponses()) {
+                s += "<div>" + response + "</div>";
+            }
         }
         s += "</div><br>";
 
@@ -106,17 +118,22 @@ public class ResultsSurveyController {
      */
     private String getRangeResults(RangeQuestion q) {
         String s = "";
-        s += "<h3>" + q.getPrompt() + "</h3><table><tr><th>Bins\\Number of values:</th>";
+        s += "<h3>" + q.getPrompt() + "</h3>";
+
+        if (q.getResponses().isEmpty()) {
+            s += "<p>No responses.</p>";
+            return s;
+        }
+        s += "<table><tr><th>Bins\\Number of values:</th>";
 
         //TODO: set up for histogram better
         //don't really need to do below when using an actual library/doing math in js
         Float min = Collections.min(q.getResponses());
-        int numBins = 7; //arbitrary number for demonstration purposes
-        float binWidth = getBinWidth(q.getResponses(), numBins);
+        float binWidth = getBinWidth(q.getResponses(), NUM_BINS);
 
         NavigableMap<Float, Integer> histogram = new TreeMap<>();
         //initialize bins with counts
-        for (int i = 0; i < numBins; i++) {
+        for (int i = 0; i < NUM_BINS; i++) {
             histogram.put(min + i * binWidth, 0);
         }
 
