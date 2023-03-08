@@ -35,12 +35,86 @@ public class ResultsSurveyControllerTest {
 
     @Test
     public void testEmptyQuestionResults() throws Exception{
-        Survey s = new Survey();
+        String name = "survey1";
+        Survey s = new Survey(name);
         surveyRepository.save(s);
         mockMvc.perform(get("/survey/" + s.getId() + "/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(content().string(containsString(name)))
                 .andExpect(content().string(containsString("Survey has no questions")));
+    }
+
+    @Test
+    public void testEmptyMultipleChoiceResults() throws Exception{
+        List<Question> questions = new ArrayList<>();
+        MultiplechoiceQuestion q = new MultiplechoiceQuestion();
+        String prompt = "Choose A or B:";
+        q.setPrompt(prompt);
+        String choice1 = "A";
+        String choice2 = "B";
+
+        List<String> choices = new ArrayList<>();
+        choices.add(choice1);
+        choices.add(choice2);
+        q.setOptions(choices);
+
+        questions.add(q);
+        String name = "survey1";
+        Survey s = new Survey(name);
+        s.setQuestions(questions);
+        surveyRepository.save(s);
+
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(name)))
+                .andExpect(content().string(containsString(prompt)))
+                .andExpect(content().string(containsString(choice1 + ": 0.00%")))
+                .andExpect(content().string(containsString(choice2 + ": 0.00%")));
+    }
+
+    @Test
+    public void testEmptyOpenAnswerResults() throws Exception{
+        List<Question> questions = new ArrayList<>();
+        OpenAnswerQuestion q = new OpenAnswerQuestion();
+        String prompt = "Enter some text:";
+        q.setPrompt(prompt);
+
+        questions.add(q);
+        String name = "survey1";
+        Survey s = new Survey(name);
+        s.setQuestions(questions);
+        surveyRepository.save(s);
+
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(name)))
+                .andExpect(content().string(containsString(prompt)))
+                .andExpect(content().string(containsString("No responses.")));
+    }
+
+    @Test
+    public void testEmptyRangeResults() throws Exception{
+        List<Question> questions = new ArrayList<>();
+        String prompt = "Choose a value:";
+        float low = -1f;
+        float high = 6f;
+        RangeQuestion q = new RangeQuestion(prompt, low, high);
+
+        questions.add(q);
+        String name = "survey1";
+        Survey s = new Survey(name);
+        s.setQuestions(questions);
+        surveyRepository.save(s);
+
+        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(name)))
+                .andExpect(content().string(containsString(prompt)))
+                .andExpect(content().string(containsString("No responses.")));
     }
 
     @Test
