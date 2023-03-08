@@ -133,7 +133,7 @@ public class ResultsSurveyController {
 
         //populate table
         for (Float leftBound : histogram.keySet()) {
-            s += "<tr><td>" + String.format("%.2f", leftBound) + " to " + String.format("%.2f", leftBound + binWidth) + "</td>";
+            s += "<tr><td>[" + String.format("%.2f", leftBound) + ", " + String.format("%.2f", leftBound + binWidth) + ")</td>";
             int i = 0;
             for (; i < histogram.get(leftBound); i++) {
                 s += "<td>▬</td>"; // could specify a class for filled counts
