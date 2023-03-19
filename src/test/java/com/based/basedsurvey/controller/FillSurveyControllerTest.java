@@ -8,8 +8,10 @@ import lombok.extern.java.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,7 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -67,7 +70,7 @@ public class FillSurveyControllerTest {
         Survey s = new Survey(name);
         sr.save(s);
 
-        mockMvc.perform(get("/survey/2/answer"))
+        mockMvc.perform(get("/survey/1/answer"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Survey has no questions")));
@@ -110,16 +113,16 @@ public class FillSurveyControllerTest {
         sr.save(s);
 
         // get the page to fill out the survey and expect it contains all the question prompts
-        this.mockMvc.perform(get("/survey/3/answer")).andDo(print())
+        this.mockMvc.perform(get("/survey/1/answer")).andDo(print())
                 .andExpect(content().string(containsString("Is this project super based or ultra based?:")))
                 .andExpect(content().string(containsString("How based is this project?")))
                 .andExpect(content().string(containsString("Rate how based this project is")))
                 .andExpect(status().isOk());
 
         // post 3 sets of responses to the survey
-        this.mockMvc.perform(post("/survey/3/answer").param("values","super based", "its really based", "-5")).andExpect(status().isFound());
-        this.mockMvc.perform(post("/survey/3/answer").param("values","super based", "its giga based", "9")).andExpect(status().isFound());
-        this.mockMvc.perform(post("/survey/3/answer").param("values","ultra based", "its mega based", "10")).andExpect(status().isFound());
+        this.mockMvc.perform(post("/survey/1/answer").param("values","super based", "its really based", "-5")).andExpect(status().isFound());
+        this.mockMvc.perform(post("/survey/1/answer").param("values","super based", "its giga based", "9")).andExpect(status().isFound());
+        this.mockMvc.perform(post("/survey/1/answer").param("values","ultra based", "its mega based", "10")).andExpect(status().isFound());
 
         // for each question check if the responses were actually added
         MultiplechoiceQuestion q1 = (MultiplechoiceQuestion) qr.findById(1);
