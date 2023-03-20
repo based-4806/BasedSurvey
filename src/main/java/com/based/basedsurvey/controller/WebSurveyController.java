@@ -15,8 +15,9 @@ public class WebSurveyController {
 
     SurveyRepository surveyRepository;
     QuestionRepository questionRepository;
+
     @Autowired
-    public WebSurveyController(SurveyRepository surveyRepository, QuestionRepository questionRepository){
+    public WebSurveyController(SurveyRepository surveyRepository, QuestionRepository questionRepository) {
         this.surveyRepository = surveyRepository;
         this.questionRepository = questionRepository;
 
@@ -42,7 +43,7 @@ public class WebSurveyController {
 
     @DeleteMapping("survey/{id}")
     @ResponseBody
-    public String deleteSurveyHtmx(@PathVariable long id){
+    public String deleteSurveyHtmx(@PathVariable long id) {
         surveyRepository.deleteById(id);
         return "";
     }

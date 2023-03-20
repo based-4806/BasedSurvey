@@ -2,6 +2,7 @@ package com.based.basedsurvey.controller;
 
 import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.SurveyRepository;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
