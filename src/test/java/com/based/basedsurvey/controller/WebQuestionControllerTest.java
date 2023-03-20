@@ -160,4 +160,17 @@ public class WebQuestionControllerTest {
         this.mockMvc.perform(get("/question/" + q1ID)).andDo(print()).andExpect(status().isOk());
 
     }
+
+    @SneakyThrows
+    @Test
+    public void testHtmxDelete(){
+        //make sure webpage is up and contains question (control)
+        this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("/question/1")));
+
+        //call controller
+        this.mockMvc.perform(delete("/question/delete/1")).andExpect(status().isOk());
+
+
+    }
 }
