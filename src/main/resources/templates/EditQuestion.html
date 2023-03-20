@@ -11,7 +11,7 @@
   </style>
 </head>
 <body>
-  <h1 th:text="'Question for Survey with ID:'+${survey.getId()}">Survey Info</h1>
+  <a th:href="@{/survey/{id}/edit(id=${survey.getId()})}" th:text="'Go back to: '+${survey.getName()}">Survey Info</a>
   <h2 th:text="'Question ID:'+${question.getId()}">Question ID</h2>
   <form method="post" th:action="@{/question/rename}">
     <input type="hidden" name="id" th:value="${question.getId()}"/>
