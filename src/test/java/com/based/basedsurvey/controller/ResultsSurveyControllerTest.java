@@ -4,8 +4,11 @@ import com.based.basedsurvey.data.*;
 import com.based.basedsurvey.repo.SurveyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
@@ -16,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ResultsSurveyControllerTest {
@@ -38,7 +43,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         surveyRepository.save(s);
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -65,7 +70,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -87,7 +92,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -109,7 +114,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -145,7 +150,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -176,7 +181,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
@@ -208,7 +213,7 @@ public class ResultsSurveyControllerTest {
         s.setQuestions(questions);
         surveyRepository.save(s);
 
-        mockMvc.perform(get("/survey/" + s.getId() + "/results"))
+        mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
