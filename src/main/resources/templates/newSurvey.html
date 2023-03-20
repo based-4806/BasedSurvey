@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script type="text/javascript" th:src="@{/webjars/htmx.org/1.8.6/dist/htmx.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/hyperscript.org/0.9.8/dist/_hyperscript.js}"></script>
     <link rel="stylesheet" th:href="@{/index.css}"/>
     <meta charset="UTF-8">
     <title>Based Survey</title>
@@ -37,11 +39,9 @@
             <td th:text="${question.getId()}"></td>
             <td><a th:href="@{/question/{q}(q=${question.getId()})}" th:text="${question.getPrompt()}"></a></td>
             <td>
-                <form method="post" th:action="@{/question/delete}">
-                    <input type="hidden" name="surveyID" th:value="${survey.getId()}"/>
-                    <input type="hidden" name="questionID" th:value="${question.getId()}"/>
-                    <button type="submit" >X</button>
-                </form>
+                <button hx-confirm="Are you sure you want to delete this based question?" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" th:attr="hx-delete=@{/question/delete/{id}(id=${question.getId()})}">
+                    Delete
+                </button>
             </td>
         </tr>
         </tbody>

@@ -55,6 +55,16 @@ public class WebEditSurveyController {
         return "redirect:/survey/"+surveyID +"/edit";
     }
 
+    @DeleteMapping(value = "question/delete/{questionID}")
+    @ResponseBody
+    public String deleteSurveyHtmx(@PathVariable long questionID){
+        var question = getQuestion(questionID);
+        var survey = question.getSurvey();
+        survey.getQuestions().remove(question);
+        surveyRepository.save(survey);
+        return "";
+    }
+
     @PostMapping("survey/rename")
     public String editName(@RequestParam String prompt, @RequestParam long id) {
         var survey = getSurvey(id);
