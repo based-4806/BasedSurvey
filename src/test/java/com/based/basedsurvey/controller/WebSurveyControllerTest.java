@@ -57,4 +57,23 @@ public class WebSurveyControllerTest {
                 .andExpect(redirectedUrl("/"));
         Assertions.assertEquals(size - 1, surveyRepository.findAll().spliterator().estimateSize());
     }
+
+    @Test
+    public void testSurveyStatus() throws Exception{
+        Survey s1 = new Survey("Bobby Portis jr");
+        surveyRepository.save(s1);
+
+        mockMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Closed")));
+
+        s1.setOpen(true);
+        surveyRepository.save(s1);
+
+        mockMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Open")));
+    }
 }
