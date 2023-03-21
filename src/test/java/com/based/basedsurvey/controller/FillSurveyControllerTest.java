@@ -68,6 +68,7 @@ public class FillSurveyControllerTest {
         // create survey with no questions
         String name = "survey2";
         Survey s = new Survey(name);
+        s.setOpen(true);
         sr.save(s);
 
         mockMvc.perform(get("/survey/1/answer"))
@@ -105,6 +106,7 @@ public class FillSurveyControllerTest {
         // add questions to a survey
         String name = "survey3";
         Survey s = new Survey(name);
+        s.setOpen(true);
         List<Question> questions = new ArrayList<>();
         questions.add(mq);
         questions.add(oq);

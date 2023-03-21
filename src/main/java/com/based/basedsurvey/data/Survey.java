@@ -24,6 +24,6 @@ public class Survey {
 
     public Survey(String name){
         this.name = name;
-        open = true;
+        open = false;
     }
 }

@@ -38,7 +38,7 @@ public class SurveyTest {
         //test attributes
         assertEquals("My Survey", survey.getName());
         assertEquals(0, survey.getQuestions().size());
-        assertTrue(survey.isOpen());
+        assertFalse(survey.isOpen());
         //add questions to survey
         survey.getQuestions().add(openQuestion());
         survey.getQuestions().add(multiQuestion());

@@ -73,6 +73,15 @@ public class WebEditSurveyController {
         return "redirect:/survey/"+id +"/edit";
     }
 
+    @PostMapping("survey/openSurvey")
+    public String enableButtons(@RequestParam long id, @RequestParam boolean enable) {
+        var survey = getSurvey(id);
+        survey.setOpen(enable);
+        surveyRepository.save(survey);
+        return "redirect:/survey/"+id +"/edit";
+    }
+
+
     private Survey getSurvey(long id){
         var survey = surveyRepository.findSurveyById(id);
         if(survey == null){
