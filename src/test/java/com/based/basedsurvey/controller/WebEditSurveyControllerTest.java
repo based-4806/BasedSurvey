@@ -82,7 +82,7 @@ public class WebEditSurveyControllerTest {
         sr.save(survey);
 
         assertEquals(0, sr.findSurveyById(1).getQuestions().size());
-        mockMvc.perform(post("/question/create").param("surveyID", "1").param("qt", "MULTIPLE_CHOICE").param("prompt", "Test")).andExpect(status().isFound());
+        mockMvc.perform(post("/question/create").param("surveyID", "1").param("qt", "MULTIPLE_CHOICE").param("prompt", "Test").param("additionalInfo", "TestInfo")).andExpect(status().isFound());
         assertEquals(1, sr.findSurveyById(1).getQuestions().size());
     }
 }

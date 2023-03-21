@@ -42,6 +42,15 @@ public class WebQuestionController {
         return "redirect:/question/"+id;
     }
 
+    @PostMapping("question/changeInfo")
+    public String editAdditionalInfo(@RequestParam String info, @RequestParam long id) {
+        var question = getQuestion(id);
+        question.setAdditionalInfo(info);
+        questionRepository.save(question);
+
+        return "redirect:/question/"+id;
+    }
+
     @PostMapping("question/removeOption")
     public String removeOption(@RequestParam int optionIndex, @RequestParam long id) {
         var mcq = getMCQ(id);

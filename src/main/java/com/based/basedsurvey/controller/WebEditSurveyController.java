@@ -35,11 +35,12 @@ public class WebEditSurveyController {
     }
 
     @PostMapping("question/create")
-    public String createQuestion(@RequestParam long surveyID, @RequestParam QuestionTypes qt, @RequestParam String prompt) {
+    public String createQuestion(@RequestParam long surveyID, @RequestParam QuestionTypes qt, @RequestParam String prompt, @RequestParam String additionalInfo) {
         var question = QuestionTypes.makeQuestionFromType(qt);
         var survey = getSurvey(surveyID);
         question.setSurvey(survey);
         question.setPrompt(prompt);
+        question.setAdditionalInfo(additionalInfo);
         questionRepository.save(question);
         survey.getQuestions().add(question);
         surveyRepository.save(survey);

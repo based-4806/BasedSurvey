@@ -65,6 +65,7 @@ public class ResultsSurveyController {
     private String getMultipleChoiceResults(MultiplechoiceQuestion q) {
         String s = "";
         s += "<h3>" + q.getPrompt() + "</h3>";
+        if (Objects.equals(q.getAdditionalInfo(), "")) assert true; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
 
         Map<Integer, Integer> responseCounts = new HashMap<>();
         //initialize counts for each option
@@ -98,6 +99,7 @@ public class ResultsSurveyController {
         String s = "";
         //doesn't quite work, but this should probably be done with css
         s += "<h3>" + q.getPrompt() + "</h3><div height='200px' overflow='scroll'>"; // could specify a class/id for the div
+        if (Objects.equals(q.getAdditionalInfo(), "")) assert true; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         if (q.getResponses().isEmpty()) {
             s += "<div>No responses.</div>";
         }
@@ -119,6 +121,7 @@ public class ResultsSurveyController {
     private String getRangeResults(RangeQuestion q) {
         String s = "";
         s += "<h3>" + q.getPrompt() + "</h3>";
+        if (Objects.equals(q.getAdditionalInfo(), "")) assert true; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
 
         if (q.getResponses().isEmpty()) {
             s += "<p>No responses.</p>";
