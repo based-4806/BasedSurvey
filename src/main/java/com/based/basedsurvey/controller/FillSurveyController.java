@@ -124,7 +124,7 @@ public class FillSurveyController {
     private String getMultipleChoiceInputs(MultiplechoiceQuestion q) {
         String s = "<hr>";
         s += "<h3> " + q.getPrompt() + " </h3>";
-        if (Objects.equals(q.getAdditionalInfo(), "")) assert true; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
+        if (Objects.equals(q.getAdditionalInfo(), "")) ; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         for (String option : (q).getOptions()) {
             s += "<input type=\"radio\" id=\"" + option + "\" name=\"values\" checked=\"checked\" value=\"" + option + "\">";
             s += "<label for=\"" + option + "\">" + option + "</label><br>";
@@ -141,7 +141,7 @@ public class FillSurveyController {
     private String getOpenAnswerInput(OpenAnswerQuestion q) {
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
-        if (Objects.equals(q.getAdditionalInfo(), "")) assert true; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
+        if (Objects.equals(q.getAdditionalInfo(), "")) ; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         s += "<input type=\"text\" id=\"values\" name=\"values\"><br>";
         return s;
     }
@@ -154,7 +154,7 @@ public class FillSurveyController {
     private String getRangeInput(RangeQuestion q) {
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
-        if (Objects.equals(q.getAdditionalInfo(), "")) assert true; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
+        if (Objects.equals(q.getAdditionalInfo(), "")) ; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         s += "<input type=\"range\" name=\"values\" value=\"" + (q).getLow() + "\" min=\"" + (q).getLow() + "\" max=\"" + (q).getHigh() + "\" step=\"0.1\" oninput=\"this.nextElementSibling.value = this.value\">\n";
         s += "<output>" + (q).getLow() + "</output>";
         return s;
