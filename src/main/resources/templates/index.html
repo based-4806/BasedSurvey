@@ -21,19 +21,22 @@
             <th scope="col">Delete</th>
             <th scope="col">Edit</th>
             <th scope="col">Results</th>
+            <th scope="col">Availability</th>
         </tr>
         </thead>
         <tbody>
             <tr th:each="survey: ${surveys}">
                 <td th:text="${survey.getId()}"></td>
-                <td ><a th:href="${'/survey/'+ survey.getId()}+'/answer'" th:text="${survey.getName()}"></a></td>
+                <td th:if="${survey.isOpen()}"><a th:href="${'/survey/'+ survey.getId()}+'/answer'" th:text="${survey.getName()}"></a></td>
+                <td th:if="${!survey.isOpen()}"><p th:text="${survey.getName()}" /></td>
                 <td >
                     <button hx-confirm="Are you sure you want to delete this based survey?" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" th:attr="hx-delete=@{/survey/{id}(id=${survey.getId()})}">
                         Delete
                     </button>
                 </td>
                 <td >
-                    <form method="get" th:action="@{/survey/{id}/edit(id=${survey.getId()})}" class="inline">
+                    <p th:if="${survey.isOpen()}">Survey cannot be edited</p>
+                    <form th:if="${!survey.isOpen()}" method="get" th:action="@{/survey/{id}/edit(id=${survey.getId()})}" class="inline">
                         <input type="hidden" name="id" th:value="${survey.getId()}">
                         <button type="submit" name="submit_param" value="submit_value" class="link-button">
                             O
@@ -46,6 +49,9 @@
                             O
                         </button>
                     </form>
+                </td>
+                <td>
+                    <p th:text="${survey.isOpen()?'OPEN':'CLOSED'}"/>
                 </td>
             </tr>
         </tbody>

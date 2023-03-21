@@ -2,6 +2,7 @@ package com.based.basedsurvey.controller;
 
 import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.SurveyRepository;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.hamcrest.Matchers.not;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -33,7 +35,7 @@ public class WebSurveyControllerTest {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Bobby Portis jr")));;
+                .andExpect(content().string(containsString("Bobby Portis jr")));
     }
 
     @Test
@@ -44,6 +46,34 @@ public class WebSurveyControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
         Assertions.assertEquals(size + 1, surveyRepository.findAll().spliterator().estimateSize());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testOpenedSurveyIndex(){
+        var survey = new Survey("Bobby Portis jr");
+        survey.setOpen(true);
+        surveyRepository.save(survey);
+        mockMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Survey cannot be edited")))
+                .andExpect(content().string(containsString("OPEN")))
+                .andExpect(content().string(not(containsString("CLOSED"))));
+    }
+
+    @Test
+    @SneakyThrows
+    public void testClosedSurveyIndex(){
+        var survey = new Survey("Bobby Portis jr");
+        survey.setOpen(false);
+        surveyRepository.save(survey);
+        mockMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(not((containsString("Survey cannot be edited")))))
+                .andExpect(content().string(containsString("CLOSED")))
+                .andExpect(content().string(not(containsString("OPEN"))));
     }
 
     @Test
