@@ -55,8 +55,8 @@ public class FillSurveyController {
         for (Question q : s.getQuestions()) {
 
             // case 1, the question is a multiple choice question
-            if (q instanceof MultiplechoiceQuestion) {
-                formInputs += getMultipleChoiceInputs((MultiplechoiceQuestion) q);
+            if (q instanceof MultipleChoiceQuestion) {
+                formInputs += getMultipleChoiceInputs((MultipleChoiceQuestion) q);
 
                 // case 2, the question is an open answer question
             } else if (q instanceof OpenAnswerQuestion) {
@@ -104,8 +104,8 @@ public class FillSurveyController {
     private void addResponse(Question q, String value) {
 
         //case 1, the question is a multiple choice question
-        if (q instanceof MultiplechoiceQuestion multiChoice) {
-            multiChoice.getResponses().add(((MultiplechoiceQuestion) q).getOptions().indexOf(value));
+        if (q instanceof MultipleChoiceQuestion multiChoice) {
+            multiChoice.getResponses().add(((MultipleChoiceQuestion) q).getOptions().indexOf(value));
 
             // case 2, the question is an open answer question
         } else if (q instanceof OpenAnswerQuestion openAnswer) {
@@ -122,7 +122,7 @@ public class FillSurveyController {
      * @param q the multiple choice question
      * @return the HTML inputs for the question
      */
-    private String getMultipleChoiceInputs(MultiplechoiceQuestion q) {
+    private String getMultipleChoiceInputs(MultipleChoiceQuestion q) {
         @Language("html")
         String s = "<hr>";
         s += "<h3> " + q.getPrompt() + " </h3>";

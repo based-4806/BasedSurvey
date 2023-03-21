@@ -94,7 +94,7 @@ public class WebEditSurveyControllerTest {
         survey.setOpen(true);
         sr.save(survey);
 
-        var question = new MultiplechoiceQuestion();
+        var question = new MultipleChoiceQuestion();
         question.setSurvey(survey);
         question.setPrompt("Test Question");
         qr.save(question);
@@ -114,7 +114,7 @@ public class WebEditSurveyControllerTest {
         survey.setOpen(false);
         sr.save(survey);
 
-        var question = new MultiplechoiceQuestion();
+        var question = new MultipleChoiceQuestion();
         question.setSurvey(survey);
         question.setPrompt("Test Question");
         qr.save(question);

@@ -92,12 +92,12 @@ public class WebQuestionController {
      * @param id the id of the question
      * @return MultiplechoiceQuestionz for that id
      */
-    private MultiplechoiceQuestion getMCQ(long id){
+    private MultipleChoiceQuestion getMCQ(long id){
         var question = getQuestion(id);
-        if(!(question instanceof MultiplechoiceQuestion)){
+        if(!(question instanceof MultipleChoiceQuestion)){
             throw new IllegalArgumentException("Question of ID:" + id + " is not a multiple choice question");
         }
-        return (MultiplechoiceQuestion)question;
+        return (MultipleChoiceQuestion)question;
     }
 
     /**
@@ -138,8 +138,8 @@ public class WebQuestionController {
         List<String> options = new ArrayList<>();
         var type = QuestionTypes.OPEN_ENDED;
         float lowerBound = 0, upperBound = 0;
-        if (question instanceof MultiplechoiceQuestion) {
-            options = ((MultiplechoiceQuestion) question).getOptions();
+        if (question instanceof MultipleChoiceQuestion) {
+            options = ((MultipleChoiceQuestion) question).getOptions();
             type = QuestionTypes.MULTIPLE_CHOICE;
         } else if (question instanceof OpenAnswerQuestion) {
             type = QuestionTypes.OPEN_ENDED;

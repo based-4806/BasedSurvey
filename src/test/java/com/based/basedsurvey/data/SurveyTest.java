@@ -63,13 +63,13 @@ public class SurveyTest {
         assertEquals(survey, q1.getSurvey());
 
         //update question
-        var multichoice = (MultiplechoiceQuestion) q2;
+        var multichoice = (MultipleChoiceQuestion) q2;
         multichoice.getResponses().add(10);
         multichoice.getResponses().add(9);
         multichoice.getResponses().add(8);
         qr.save(multichoice);
 
-        assertEquals(3,((MultiplechoiceQuestion)qr.findById(multichoice.getId())).getResponses().size());
+        assertEquals(3,((MultipleChoiceQuestion)qr.findById(multichoice.getId())).getResponses().size());
 
         //find all by survey id
         assertEquals(3, qr.findAllBySurveyId(survey.getId()).size());
@@ -92,8 +92,8 @@ public class SurveyTest {
         q.setAdditionalInfo("question 1 additional info");
         return q;
     }
-    private MultiplechoiceQuestion multiQuestion(){
-        MultiplechoiceQuestion q = new MultiplechoiceQuestion();
+    private MultipleChoiceQuestion multiQuestion(){
+        MultipleChoiceQuestion q = new MultipleChoiceQuestion();
         q.setSurvey(survey);
         q.setPrompt("Question 2 prompt");
         q.setAdditionalInfo("question 2 additional info");

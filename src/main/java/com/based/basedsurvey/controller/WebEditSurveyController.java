@@ -1,6 +1,5 @@
 package com.based.basedsurvey.controller;
 
-import com.based.basedsurvey.data.MultiplechoiceQuestion;
 import com.based.basedsurvey.data.Question;
 import com.based.basedsurvey.data.QuestionTypes;
 import com.based.basedsurvey.data.Survey;

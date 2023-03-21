@@ -80,7 +80,7 @@ public class FillSurveyControllerTest {
     @Test
     public void testFillSurvey() throws Exception {
         // create multiple choice question
-        MultiplechoiceQuestion mq = new MultiplechoiceQuestion();
+        MultipleChoiceQuestion mq = new MultipleChoiceQuestion();
         String prompt1 = "Is this project super based or ultra based?:";
         mq.setPrompt(prompt1);
         String additionalInfo1 = "hint, it's ultra based";
@@ -136,7 +136,7 @@ public class FillSurveyControllerTest {
         this.mockMvc.perform(post("/survey/1/answer").param("values","ultra based", "its mega based", "10")).andExpect(status().isFound());
 
         // for each question check if the responses were actually added
-        MultiplechoiceQuestion q1 = (MultiplechoiceQuestion) qr.findById(1);
+        MultipleChoiceQuestion q1 = (MultipleChoiceQuestion) qr.findById(1);
         assertEquals(0, (int) q1.getResponses().get(0));
         assertEquals(0, (int) q1.getResponses().get(1));
         assertEquals(1, (int) q1.getResponses().get(2));

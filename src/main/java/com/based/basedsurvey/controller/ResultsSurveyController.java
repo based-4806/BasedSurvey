@@ -43,8 +43,8 @@ public class ResultsSurveyController {
         String results = "";
 
         for (Question q : s.getQuestions()) {
-            if (q instanceof MultiplechoiceQuestion) {
-                results += getMultipleChoiceResults((MultiplechoiceQuestion) q);
+            if (q instanceof MultipleChoiceQuestion) {
+                results += getMultipleChoiceResults((MultipleChoiceQuestion) q);
             }
             else if (q instanceof OpenAnswerQuestion) {
                 results += getOpenAnswerResults((OpenAnswerQuestion) q);
@@ -63,7 +63,7 @@ public class ResultsSurveyController {
      * @param q MultiplechoiceQuestion
      * @return String of html elements
      */
-    private String getMultipleChoiceResults(MultiplechoiceQuestion q) {
+    private String getMultipleChoiceResults(MultipleChoiceQuestion q) {
         @Language("html")
         String s = "";
         s += "<h3>" + q.getPrompt() + "</h3>";
