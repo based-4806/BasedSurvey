@@ -3,6 +3,7 @@ package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.SurveyRepository;
 import org.junit.jupiter.api.Assertions;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,8 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -55,6 +55,18 @@ public class WebSurveyControllerTest {
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+        Assertions.assertEquals(size - 1, surveyRepository.findAll().spliterator().estimateSize());
+    }
+
+    @Test
+    @SneakyThrows
+    public void testHtmxDeleteSurvey(){
+        Survey s1 = new Survey("Bobby Portis jr");
+        surveyRepository.save(s1);
+        long size = surveyRepository.findAll().spliterator().estimateSize();
+        mockMvc.perform(delete("/survey/"+s1.getId()))
+                .andDo(print())
+                .andExpect(status().isOk());
         Assertions.assertEquals(size - 1, surveyRepository.findAll().spliterator().estimateSize());
     }
 }
