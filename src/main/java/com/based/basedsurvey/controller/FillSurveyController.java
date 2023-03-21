@@ -2,6 +2,7 @@ package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.*;
 import com.based.basedsurvey.repo.SurveyRepository;
 import lombok.extern.java.Log;
+import org.intellij.lang.annotations.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -122,6 +123,7 @@ public class FillSurveyController {
      * @return the HTML inputs for the question
      */
     private String getMultipleChoiceInputs(MultiplechoiceQuestion q) {
+        @Language("html")
         String s = "<hr>";
         s += "<h3> " + q.getPrompt() + " </h3>";
         if (Objects.equals(q.getAdditionalInfo(), "")) ; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
@@ -139,6 +141,7 @@ public class FillSurveyController {
      * @return the HTML inputs for the question
      */
     private String getOpenAnswerInput(OpenAnswerQuestion q) {
+        @Language("html")
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
         if (Objects.equals(q.getAdditionalInfo(), "")) ; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
@@ -152,6 +155,7 @@ public class FillSurveyController {
      * @return the HTML inputs for the question
      */
     private String getRangeInput(RangeQuestion q) {
+        @Language("html")
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
         if (Objects.equals(q.getAdditionalInfo(), "")) ; else s += "additional notes: " + q.getAdditionalInfo() + "<br>";
