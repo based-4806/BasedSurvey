@@ -62,6 +62,7 @@ public class WebQuestionControllerTest {
             var question = new MultiplechoiceQuestion();
             question.setSurvey(survey);
             question.setPrompt("Test Question");
+            question.setAdditionalInfo("this project is based");
             qr.save(question);
             q1ID = question.getId();
         }
@@ -70,6 +71,7 @@ public class WebQuestionControllerTest {
             var question = new OpenAnswerQuestion();
             question.setSurvey(survey);
             question.setPrompt("Open Answer Test Question");
+            question.setAdditionalInfo("this project is based");
             qr.save(question);
             q2ID = question.getId();
         }
@@ -78,6 +80,7 @@ public class WebQuestionControllerTest {
             var question = new RangeQuestion();
             question.setSurvey(survey);
             question.setPrompt("Range Test Question");
+            question.setAdditionalInfo("this project is based");
             qr.save(question);
             q3ID = question.getId();
         }
@@ -90,8 +93,11 @@ public class WebQuestionControllerTest {
 
         // rename
         assertEquals("Test Question",qr.findById(q1ID).getPrompt()); //control
+        assertEquals("this project is based",qr.findById(q1ID).getAdditionalInfo());
         this.mockMvc.perform(post("/question/rename").param("id", String.valueOf(q1ID)).param("prompt","Changed")).andExpect(status().isFound());
         assertEquals("Changed",qr.findById(q1ID).getPrompt());
+        this.mockMvc.perform(post("/question/changeInfo").param("id", String.valueOf(q1ID)).param("info","new info")).andExpect(status().isFound());
+        assertEquals("new info",qr.findById(q1ID).getAdditionalInfo());
 
         // add option
         assertEquals(0,((MultiplechoiceQuestion)qr.findById(q1ID)).getOptions().size()); //control
@@ -121,8 +127,11 @@ public class WebQuestionControllerTest {
 
         // rename
         assertEquals("Open Answer Test Question", qr.findById(q2ID).getPrompt()); //control
+        assertEquals("this project is based", qr.findById(q2ID).getAdditionalInfo());
         this.mockMvc.perform(post("/question/rename").param("id", String.valueOf(q2ID)).param("prompt", "Changed")).andExpect(status().isFound());
         assertEquals("Changed", qr.findById(q2ID).getPrompt());
+        this.mockMvc.perform(post("/question/changeInfo").param("id", String.valueOf(q2ID)).param("info","new info")).andExpect(status().isFound());
+        assertEquals("new info",qr.findById(q2ID).getAdditionalInfo());
     }
 
 
@@ -133,8 +142,11 @@ public class WebQuestionControllerTest {
 
         // rename
         assertEquals("Range Test Question",qr.findById(q3ID).getPrompt()); //control
+        assertEquals("this project is based",qr.findById(q3ID).getAdditionalInfo());
         this.mockMvc.perform(post("/question/rename").param("id", String.valueOf(q3ID)).param("prompt","Changed Range")).andExpect(status().isFound());
         assertEquals("Changed Range",qr.findById(q3ID).getPrompt());
+        this.mockMvc.perform(post("/question/changeInfo").param("id", String.valueOf(q3ID)).param("info","new info")).andExpect(status().isFound());
+        assertEquals("new info",qr.findById(q3ID).getAdditionalInfo());
         RangeQuestion rangeQuestion= (RangeQuestion)qr.findById(q3ID);
         //check default bounds
         assertEquals(0.0f, rangeQuestion.getLow(),0.001f);

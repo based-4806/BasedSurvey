@@ -29,6 +29,7 @@ public class OpenAnswerQuestionTest {
         repo.deleteAll();
         question = new OpenAnswerQuestion();
         question.setPrompt("Prompt Text");
+        question.setAdditionalInfo("Some Additional Info");
         var responses = question.getResponses();
         responses.add("Answer 1");
         responses.add("Answer 2");
@@ -40,6 +41,11 @@ public class OpenAnswerQuestionTest {
     @Test
     public void testPrompt(){
         assertEquals("Prompt Text", questionUnderTest.getPrompt());
+    }
+
+    @Test
+    public void testAdditionalInfo(){
+        assertEquals("Some Additional Info", questionUnderTest.getAdditionalInfo());
     }
 
     @Test

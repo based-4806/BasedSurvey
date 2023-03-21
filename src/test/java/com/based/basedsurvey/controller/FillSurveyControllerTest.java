@@ -83,6 +83,8 @@ public class FillSurveyControllerTest {
         MultiplechoiceQuestion mq = new MultiplechoiceQuestion();
         String prompt1 = "Is this project super based or ultra based?:";
         mq.setPrompt(prompt1);
+        String additionalInfo1 = "hint, it's ultra based";
+        mq.setAdditionalInfo(additionalInfo1);
         String choice1 = "super based";
         String choice2 = "ultra based";
 
@@ -95,11 +97,15 @@ public class FillSurveyControllerTest {
         OpenAnswerQuestion oq = new OpenAnswerQuestion();
         String prompt2 = "How based is this project?";
         oq.setPrompt(prompt2);
+        String additionalInfo2 = "hint, it's giga based";
+        oq.setAdditionalInfo(additionalInfo2);
 
         // create range question
         RangeQuestion rq = new RangeQuestion();
         String prompt3 = "Rate how based this project is";
         rq.setPrompt(prompt3);
+        String additionalInfo3 = "hint, select the max value";
+        rq.setAdditionalInfo(additionalInfo3);
         rq.setLow(-10);
         rq.setHigh(10);
 
@@ -119,6 +125,9 @@ public class FillSurveyControllerTest {
                 .andExpect(content().string(containsString("Is this project super based or ultra based?:")))
                 .andExpect(content().string(containsString("How based is this project?")))
                 .andExpect(content().string(containsString("Rate how based this project is")))
+                .andExpect(content().string(containsString("additional notes: hint, it's ultra based")))
+                .andExpect(content().string(containsString("additional notes: hint, it's giga based")))
+                .andExpect(content().string(containsString("additional notes: hint, select the max value")))
                 .andExpect(status().isOk());
 
         // post 3 sets of responses to the survey

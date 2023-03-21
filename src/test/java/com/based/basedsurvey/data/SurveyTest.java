@@ -55,6 +55,10 @@ public class SurveyTest {
         assertEquals("Question 2 prompt", q2.getPrompt());
         assertEquals("Question 3 prompt", q3.getPrompt());
 
+        assertEquals("question 1 additional info", q1.getAdditionalInfo());
+        assertEquals("question 2 additional info", q2.getAdditionalInfo());
+        assertEquals("question 3 additional info", q3.getAdditionalInfo());
+
         // get survey through question
         assertEquals(survey, q1.getSurvey());
 
@@ -85,12 +89,14 @@ public class SurveyTest {
         OpenAnswerQuestion q = new OpenAnswerQuestion();
         q.setSurvey(survey);
         q.setPrompt("Question 1 prompt");
+        q.setAdditionalInfo("question 1 additional info");
         return q;
     }
     private MultiplechoiceQuestion multiQuestion(){
         MultiplechoiceQuestion q = new MultiplechoiceQuestion();
         q.setSurvey(survey);
         q.setPrompt("Question 2 prompt");
+        q.setAdditionalInfo("question 2 additional info");
         q.getOptions().add("Option 1");
         q.getOptions().add("Option 2");
         return q;
@@ -100,6 +106,7 @@ public class SurveyTest {
         RangeQuestion q = new RangeQuestion();
         q.setSurvey(survey);
         q.setPrompt("Question 3 prompt");
+        q.setAdditionalInfo("question 3 additional info");
         q.setLow(0);
         q.setHigh(10);
         return q;

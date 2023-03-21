@@ -27,6 +27,7 @@ public class RangeQuestionTest {
         repo.deleteAll();
         question = new RangeQuestion();
         question.setPrompt("Prompt Text");
+        question.setAdditionalInfo("Some Additional Info");
         question.setLow(0);
         question.setHigh(2);
         var responses = question.getResponses();
@@ -48,6 +49,11 @@ public class RangeQuestionTest {
     @Test
     public void testPrompt(){
         assertEquals("Prompt Text", questionUnderTest.getPrompt());
+    }
+
+    @Test
+    public void testAdditionalInfo(){
+        assertEquals("Some Additional Info", questionUnderTest.getAdditionalInfo());
     }
 
     @Test
