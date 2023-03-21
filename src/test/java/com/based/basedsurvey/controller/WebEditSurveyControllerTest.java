@@ -85,4 +85,44 @@ public class WebEditSurveyControllerTest {
         mockMvc.perform(post("/question/create").param("surveyID", "1").param("qt", "MULTIPLE_CHOICE").param("prompt", "Test")).andExpect(status().isFound());
         assertEquals(1, sr.findSurveyById(1).getQuestions().size());
     }
+
+    @SneakyThrows
+    @Test
+    public void testEditQuestionOpen(){
+        var survey = new Survey();
+        survey.setName("Test Survey");
+        survey.setOpen(true);
+        sr.save(survey);
+
+        var question = new MultiplechoiceQuestion();
+        question.setSurvey(survey);
+        question.setPrompt("Test Question");
+        qr.save(question);
+
+        this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
+                        status().isOk())
+                .andExpect(
+                        content().string(containsString("This survey cannot be edited as it is open!"))
+                );
+    }
+
+    @SneakyThrows
+    @Test
+    public void testEditQuestionClose(){
+        var survey = new Survey();
+        survey.setName("Test Survey");
+        survey.setOpen(false);
+        sr.save(survey);
+
+        var question = new MultiplechoiceQuestion();
+        question.setSurvey(survey);
+        question.setPrompt("Test Question");
+        qr.save(question);
+
+        this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
+                        status().isOk())
+                .andExpect(
+                        content().string(not(containsString("This survey cannot be edited as it is open!")))
+                );
+    }
 }
