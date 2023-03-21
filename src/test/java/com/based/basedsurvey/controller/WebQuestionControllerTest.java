@@ -55,7 +55,6 @@ public class WebQuestionControllerTest {
     public void setup(){
         var survey = new Survey();
         survey.setName("Test Survey");
-        survey.setOpen(false);
         sr.save(survey);
 
 
