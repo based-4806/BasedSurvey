@@ -15,7 +15,6 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -56,7 +55,7 @@ public class ControllerHelperClassTest {
     public void testGetQuestion() {
 
         // create and add 3 questions to question repository
-        MultiplechoiceQuestion mcq = new MultiplechoiceQuestion();
+        MultipleChoiceQuestion mcq = new MultipleChoiceQuestion();
         mcq.setPrompt("prompt 1");
 
         OpenAnswerQuestion oaq = new OpenAnswerQuestion();

@@ -1,7 +1,6 @@
 package com.based.basedsurvey.data;
 
 import com.based.basedsurvey.repo.QuestionRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,17 +16,17 @@ import static org.junit.Assert.*;
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-public class MultiplechoiceQuestionTest {
+public class MultipleChoiceQuestionTest {
     @Autowired
     private QuestionRepository repo;
 
-    private MultiplechoiceQuestion question;
-    private MultiplechoiceQuestion questionUnderTest;
+    private MultipleChoiceQuestion question;
+    private MultipleChoiceQuestion questionUnderTest;
 
     @Before
     public void setup(){
         repo.deleteAll();
-        question = new MultiplechoiceQuestion();
+        question = new MultipleChoiceQuestion();
         question.setPrompt("Prompt Text");
         question.setAdditionalInfo("Some Additional Info");
         var options = question.getOptions();
@@ -38,7 +37,7 @@ public class MultiplechoiceQuestionTest {
         responses.add(0);
         responses.add(0);
         repo.save(question);
-        questionUnderTest = (MultiplechoiceQuestion)repo.findById(question.getId());
+        questionUnderTest = (MultipleChoiceQuestion)repo.findById(question.getId());
     }
 
 

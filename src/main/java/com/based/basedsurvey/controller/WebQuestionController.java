@@ -5,7 +5,6 @@ import com.based.basedsurvey.repo.SurveyRepository;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -92,12 +91,12 @@ public class WebQuestionController {
      * @param id the id of the question
      * @return MultiplechoiceQuestionz for that id
      */
-    private MultiplechoiceQuestion getMCQ(long id){
+    private MultipleChoiceQuestion getMCQ(long id){
         var question = ControllerHelperClass.getQuestion(id);
-        if(!(question instanceof MultiplechoiceQuestion)){
+        if(!(question instanceof MultipleChoiceQuestion)){
             throw new IllegalArgumentException("Question of ID:" + id + " is not a multiple choice question");
         }
-        return (MultiplechoiceQuestion)question;
+        return (MultipleChoiceQuestion)question;
     }
 
     /**
@@ -124,8 +123,8 @@ public class WebQuestionController {
         List<String> options = new ArrayList<>();
         var type = QuestionTypes.OPEN_ENDED;
         float lowerBound = 0, upperBound = 0;
-        if (question instanceof MultiplechoiceQuestion) {
-            options = ((MultiplechoiceQuestion) question).getOptions();
+        if (question instanceof MultipleChoiceQuestion) {
+            options = ((MultipleChoiceQuestion) question).getOptions();
             type = QuestionTypes.MULTIPLE_CHOICE;
         } else if (question instanceof OpenAnswerQuestion) {
             type = QuestionTypes.OPEN_ENDED;

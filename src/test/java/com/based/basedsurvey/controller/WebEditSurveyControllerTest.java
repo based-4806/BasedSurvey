@@ -5,19 +5,15 @@ import com.based.basedsurvey.repo.QuestionRepository;
 import com.based.basedsurvey.repo.SurveyRepository;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -94,7 +90,7 @@ public class WebEditSurveyControllerTest {
         survey.setOpen(true);
         sr.save(survey);
 
-        var question = new MultiplechoiceQuestion();
+        var question = new MultipleChoiceQuestion();
         question.setSurvey(survey);
         question.setPrompt("Test Question");
         qr.save(question);
@@ -114,7 +110,7 @@ public class WebEditSurveyControllerTest {
         survey.setOpen(false);
         sr.save(survey);
 
-        var question = new MultiplechoiceQuestion();
+        var question = new MultipleChoiceQuestion();
         question.setSurvey(survey);
         question.setPrompt("Test Question");
         qr.save(question);
