@@ -165,7 +165,7 @@ public class ResultsSurveyControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
-                .andExpect(content().string(containsString(name)))
+                .andExpect(content().string(containsString(prompt)))
                 .andExpect(content().string(containsString(additionalInfo)))
                 .andExpect(content().string(containsString(choice1 + ": 80.00%")))
                 .andExpect(content().string(containsString(choice2 + ": 20.00%")));
