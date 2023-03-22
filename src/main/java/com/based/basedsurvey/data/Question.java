@@ -12,6 +12,8 @@ public abstract class Question {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String prompt;
+
+    private String additionalInfo;
     @ManyToOne
     private Survey survey;
 

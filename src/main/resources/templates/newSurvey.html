@@ -58,8 +58,13 @@
     </table>
     <form method="post" th:action="@{/question/create}">
         <h1>Make a New Based Question</h1>
-        <p>Name:
+        <p>
+            Name:
             <input type ="text" name = "prompt" value = "New Based Question"/>
+            <br>
+            <br>
+            Additional Info (optional):
+            <input type ="text" name = "additionalInfo" value = ""/>
             <input type="hidden" name="surveyID" th:value="${survey.getId()}"/>
         </p>
         <p>

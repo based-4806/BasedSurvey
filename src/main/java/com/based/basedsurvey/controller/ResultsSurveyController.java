@@ -3,6 +3,7 @@ package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.*;
 import com.based.basedsurvey.repo.SurveyRepository;
 
+import org.intellij.lang.annotations.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,8 +64,10 @@ public class ResultsSurveyController {
      * @return String of html elements
      */
     private String getMultipleChoiceResults(MultiplechoiceQuestion q) {
+        @Language("html")
         String s = "";
         s += "<h3>" + q.getPrompt() + "</h3>";
+        if (!Objects.equals(q.getAdditionalInfo(), "")) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
 
         Map<Integer, Integer> responseCounts = new HashMap<>();
         //initialize counts for each option
@@ -95,9 +98,11 @@ public class ResultsSurveyController {
      * @return String of html elements
      */
     private String getOpenAnswerResults(OpenAnswerQuestion q) {
+        @Language("html")
         String s = "";
         //doesn't quite work, but this should probably be done with css
         s += "<h3>" + q.getPrompt() + "</h3><div height='200px' overflow='scroll'>"; // could specify a class/id for the div
+        if (!Objects.equals(q.getAdditionalInfo(), "")) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         if (q.getResponses().isEmpty()) {
             s += "<div>No responses.</div>";
         }
@@ -117,8 +122,10 @@ public class ResultsSurveyController {
      * @return String of html elements
      */
     private String getRangeResults(RangeQuestion q) {
+        @Language("html")
         String s = "";
         s += "<h3>" + q.getPrompt() + "</h3>";
+        if (!Objects.equals(q.getAdditionalInfo(), "")) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
 
         if (q.getResponses().isEmpty()) {
             s += "<p>No responses.</p>";

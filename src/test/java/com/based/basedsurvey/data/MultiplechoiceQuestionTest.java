@@ -29,6 +29,7 @@ public class MultiplechoiceQuestionTest {
         repo.deleteAll();
         question = new MultiplechoiceQuestion();
         question.setPrompt("Prompt Text");
+        question.setAdditionalInfo("Some Additional Info");
         var options = question.getOptions();
         options.add("option 1");
         options.add("option 2");
@@ -44,6 +45,11 @@ public class MultiplechoiceQuestionTest {
     @Test
     public void testPrompt(){
         assertEquals("Prompt Text", questionUnderTest.getPrompt());
+    }
+
+    @Test
+    public void testAdditionalInfo(){
+        assertEquals("Some Additional Info", questionUnderTest.getAdditionalInfo());
     }
 
     @Test
