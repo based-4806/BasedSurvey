@@ -27,7 +27,7 @@ public class WebQuestionController {
 
     @GetMapping(path = "question/{id}")
     public String editQuestion(@PathVariable("id") long id, Model model) {
-        var question = getQuestion(id);
+        var question = ControllerHelperClass.getQuestion(id);
         fillModel(model, question);
 
         return "EditQuestion";
@@ -35,7 +35,7 @@ public class WebQuestionController {
 
     @PostMapping("question/rename")
     public String editName(@RequestParam String prompt, @RequestParam long id) {
-        var question = getQuestion(id);
+        var question = ControllerHelperClass.getQuestion(id);
         question.setPrompt(prompt);
         questionRepository.save(question);
 
@@ -44,7 +44,7 @@ public class WebQuestionController {
 
     @PostMapping("question/changeInfo")
     public String editAdditionalInfo(@RequestParam String info, @RequestParam long id) {
-        var question = getQuestion(id);
+        var question = ControllerHelperClass.getQuestion(id);
         question.setAdditionalInfo(info);
         questionRepository.save(question);
 
@@ -93,7 +93,7 @@ public class WebQuestionController {
      * @return MultiplechoiceQuestionz for that id
      */
     private MultiplechoiceQuestion getMCQ(long id){
-        var question = getQuestion(id);
+        var question = ControllerHelperClass.getQuestion(id);
         if(!(question instanceof MultiplechoiceQuestion)){
             throw new IllegalArgumentException("Question of ID:" + id + " is not a multiple choice question");
         }
@@ -106,25 +106,11 @@ public class WebQuestionController {
      * @return the range  for that id
      */
     private RangeQuestion getRQ(long id){
-        var question = getQuestion(id);
+        var question = ControllerHelperClass.getQuestion(id);
         if(!(question instanceof RangeQuestion)){
             throw new IllegalArgumentException("Question of ID:" + id + " is not a range question");
         }
         return (RangeQuestion)question;
-    }
-
-    /**
-     * Uses ORM to find a question. If it doesn't exist, an exception is thrown
-     * @param id the id of the question
-     * @return the question
-     */
-    private Question getQuestion(long id){
-        var question = questionRepository.findById(id);
-        if(question == null){
-            log.warning("Question with ID: "+id+" does not exist");
-            throw new ResourceNotFoundException();
-        }
-        return question;
     }
 
     /**
