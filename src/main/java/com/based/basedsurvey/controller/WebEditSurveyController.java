@@ -28,7 +28,7 @@ public class WebEditSurveyController {
 
     @GetMapping(path = "survey/{surveyId}/edit")
     public String editSurvey(@PathVariable("surveyId") long id, Model model) {
-        var survey = getSurvey(id);
+        var survey = ControllerHelperClass.getSurvey(id);
         model.addAttribute("questions", questionRepository.findAllBySurveyId(survey.getId()));
         model.addAttribute("survey", survey);
         return "newSurvey";
@@ -37,7 +37,7 @@ public class WebEditSurveyController {
     @PostMapping("question/create")
     public String createQuestion(@RequestParam long surveyID, @RequestParam QuestionTypes qt, @RequestParam String prompt, @RequestParam String additionalInfo) {
         var question = QuestionTypes.makeQuestionFromType(qt);
-        var survey = getSurvey(surveyID);
+        var survey = ControllerHelperClass.getSurvey(surveyID);
         question.setSurvey(survey);
         question.setPrompt(prompt);
         question.setAdditionalInfo(additionalInfo);
@@ -49,8 +49,8 @@ public class WebEditSurveyController {
 
     @PostMapping("question/delete")
     public String deleteQuestion(@RequestParam long questionID, @RequestParam long surveyID) {
-        var survey = getSurvey(surveyID);
-        var question = getQuestion(questionID);
+        var survey = ControllerHelperClass.getSurvey(surveyID);
+        var question = ControllerHelperClass.getQuestion(questionID);
         survey.getQuestions().remove(question);
         surveyRepository.save(survey);
         return "redirect:/survey/"+surveyID +"/edit";
@@ -59,7 +59,7 @@ public class WebEditSurveyController {
     @DeleteMapping(value = "question/delete/{questionID}")
     @ResponseBody
     public String deleteSurveyHtmx(@PathVariable long questionID){
-        var question = getQuestion(questionID);
+        var question = ControllerHelperClass.getQuestion(questionID);
         var survey = question.getSurvey();
         survey.getQuestions().remove(question);
         surveyRepository.save(survey);
@@ -68,7 +68,7 @@ public class WebEditSurveyController {
 
     @PostMapping("survey/rename")
     public String editName(@RequestParam String prompt, @RequestParam long id) {
-        var survey = getSurvey(id);
+        var survey = ControllerHelperClass.getSurvey(id);
         survey.setName(prompt);
         surveyRepository.save(survey);
         return "redirect:/survey/"+id +"/edit";
@@ -76,28 +76,9 @@ public class WebEditSurveyController {
 
     @PostMapping("survey/openSurvey")
     public String enableButtons(@RequestParam long id, @RequestParam boolean enable) {
-        var survey = getSurvey(id);
+        var survey = ControllerHelperClass.getSurvey(id);
         survey.setOpen(enable);
         surveyRepository.save(survey);
         return "redirect:/survey/"+id +"/edit";
-    }
-
-
-    private Survey getSurvey(long id){
-        var survey = surveyRepository.findSurveyById(id);
-        if(survey == null){
-            log.warning("Survey with ID: "+id+" does not exist");
-            throw new ResourceNotFoundException();
-        }
-        return survey;
-    }
-
-    private Question getQuestion(long id){
-        var question = questionRepository.findById(id);
-        if(question == null){
-            log.warning("Question with ID: "+id+" does not exist");
-            throw new ResourceNotFoundException();
-        }
-        return question;
     }
 }
