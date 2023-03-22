@@ -11,15 +11,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -59,7 +55,7 @@ public class WebQuestionControllerTest {
 
 
         {
-            var question = new MultiplechoiceQuestion();
+            var question = new MultipleChoiceQuestion();
             question.setSurvey(survey);
             question.setPrompt("Test Question");
             question.setAdditionalInfo("this project is based");
@@ -100,15 +96,15 @@ public class WebQuestionControllerTest {
         assertEquals("new info",qr.findById(q1ID).getAdditionalInfo());
 
         // add option
-        assertEquals(0,((MultiplechoiceQuestion)qr.findById(q1ID)).getOptions().size()); //control
+        assertEquals(0,((MultipleChoiceQuestion)qr.findById(q1ID)).getOptions().size()); //control
         this.mockMvc.perform(post("/question/addOption").param("id", String.valueOf(q1ID)).param("option","DummyOption")).andExpect(status().isFound());
-        assertEquals(1,((MultiplechoiceQuestion)qr.findById(q1ID)).getOptions().size());
-        assertEquals("DummyOption",((MultiplechoiceQuestion)qr.findById(q1ID)).getOptions().get(0));
+        assertEquals(1,((MultipleChoiceQuestion)qr.findById(q1ID)).getOptions().size());
+        assertEquals("DummyOption",((MultipleChoiceQuestion)qr.findById(q1ID)).getOptions().get(0));
 
         //remove option
         //control above
         this.mockMvc.perform(post("/question/removeOption").param("id", String.valueOf(q1ID)).param("optionIndex","0")).andExpect(status().isFound());
-        assertEquals(0,((MultiplechoiceQuestion)qr.findById(q1ID)).getOptions().size());
+        assertEquals(0,((MultipleChoiceQuestion)qr.findById(q1ID)).getOptions().size());
         log.info("Final result");
         this.mockMvc.perform(get("/question/" + q1ID)).andDo(print()).andExpect(status().isOk());
 

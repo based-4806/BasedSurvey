@@ -5,7 +5,6 @@ import com.based.basedsurvey.repo.SurveyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -53,7 +52,7 @@ public class ResultsSurveyControllerTest {
     @Test
     public void testEmptyMultipleChoiceResults() throws Exception{
         List<Question> questions = new ArrayList<>();
-        MultiplechoiceQuestion q = new MultiplechoiceQuestion();
+        MultipleChoiceQuestion q = new MultipleChoiceQuestion();
         String prompt = "Choose A or B:";
         q.setPrompt(prompt);
         String additionalInfo = "this project is based";
@@ -134,7 +133,7 @@ public class ResultsSurveyControllerTest {
     @Test
     public void testMultipleChoiceResults() throws Exception{
         List<Question> questions = new ArrayList<>();
-        MultiplechoiceQuestion q = new MultiplechoiceQuestion();
+        MultipleChoiceQuestion q = new MultipleChoiceQuestion();
         String prompt = "Choose A or B:";
         q.setPrompt(prompt);
         String additionalInfo = "this project is based";

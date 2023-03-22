@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class MultiplechoiceQuestion extends Question{
+public class MultipleChoiceQuestion extends Question{
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ElementCollection(fetch = FetchType.EAGER)

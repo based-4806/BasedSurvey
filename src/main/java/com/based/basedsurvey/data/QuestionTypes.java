@@ -12,7 +12,7 @@ public enum QuestionTypes {
 
         switch(qt){
             case MULTIPLE_CHOICE:
-                return new MultiplechoiceQuestion();
+                return new MultipleChoiceQuestion();
             case RANGE:
                 return new RangeQuestion();
             case OPEN_ENDED:
