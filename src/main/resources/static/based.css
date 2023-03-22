@@ -28,3 +28,24 @@ table, form{
 .link-button:active {
     color:red;
 }
+
+body {
+    background-color: lightblue;
+}
+
+* {
+    cursor: url("smallchad.png"), auto;
+}
+
+h1,h2,h3,h4 {
+    color:#77FF77;
+
+}
+p, label, th, td {
+    color:#FF7777;
+}
+
+button{
+    color: white;
+    background: forestgreen;
+}
