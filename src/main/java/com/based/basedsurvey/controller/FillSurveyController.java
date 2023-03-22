@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
-import java.util.Objects;
 
 @Log
 @Controller
@@ -126,7 +125,7 @@ public class FillSurveyController {
         @Language("html")
         String s = "<hr>";
         s += "<h3> " + q.getPrompt() + " </h3>";
-        if (!Objects.equals(q.getAdditionalInfo(), "")) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
+        if (!q.getAdditionalInfo().isEmpty()) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         for (String option : (q).getOptions()) {
             s += "<input type=\"radio\" id=\"" + option + "\" name=\"values\" checked=\"checked\" value=\"" + option + "\">";
             s += "<label for=\"" + option + "\">" + option + "</label><br>";
@@ -144,7 +143,7 @@ public class FillSurveyController {
         @Language("html")
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
-        if (!Objects.equals(q.getAdditionalInfo(), "")) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
+        if (!q.getAdditionalInfo().isEmpty()) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         s += "<input type=\"text\" id=\"values\" name=\"values\"><br>";
         return s;
     }
@@ -158,7 +157,7 @@ public class FillSurveyController {
         @Language("html")
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
-        if (!Objects.equals(q.getAdditionalInfo(), "")) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
+        if (!q.getAdditionalInfo().isEmpty()) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         s += "<input type=\"range\" name=\"values\" value=\"" + (q).getLow() + "\" min=\"" + (q).getLow() + "\" max=\"" + (q).getHigh() + "\" step=\"0.1\" oninput=\"this.nextElementSibling.value = this.value\">\n";
         s += "<output>" + (q).getLow() + "</output>";
         return s;
