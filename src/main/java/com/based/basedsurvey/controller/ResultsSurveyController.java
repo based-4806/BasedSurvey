@@ -135,6 +135,7 @@ public class ResultsSurveyController {
             s += "<p>No responses.</p>";
             return s;
         }
+        s += "<div class='r' id='r" + q.getId() + "'></div>";
         s += "<table><tr><th>Bins\\Number of values:</th>";
 
         //TODO: set up for histogram better
