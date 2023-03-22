@@ -79,7 +79,10 @@ public class ResultsSurveyController {
             responseCounts.put(response, responseCounts.get(response) + 1);
         }
 
+        String graphDiv = "<div id='mc" + q.getId() + "' class='mc' data-options='" + q.getOptions().size() + "' "; //workaround until model of storing responses is refactored
+
         for (int i = 0; i < q.getOptions().size(); i++) {
+            graphDiv += "data-option" + i + "='" + q.getOptions().get(i) + "' data-response" + i + "='" + responseCounts.get(i) + "'";
             s += "<p>" + q.getOptions().get(i) + ": ";
             if (q.getResponses().isEmpty()) {
                 s += "0.00%</p>";
@@ -88,6 +91,7 @@ public class ResultsSurveyController {
                 s += String.format("%.2f", ((100.0f * responseCounts.get(i)) / q.getResponses().size())) + "%</p>";
             }
         }
+        s += graphDiv + "></div>";
         s += "<br>";
         return s;
     }
@@ -131,6 +135,7 @@ public class ResultsSurveyController {
             s += "<p>No responses.</p>";
             return s;
         }
+        s += "<div class='r' id='r" + q.getId() + "'></div>";
         s += "<table><tr><th>Bins\\Number of values:</th>";
 
         //TODO: set up for histogram better
