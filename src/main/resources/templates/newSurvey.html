@@ -26,16 +26,7 @@
     </form>
 
     <h2 th:text="'Survey ID: '+${survey.getId()}">Survey ID</h2>
-    <h2 th:text="'Survey Name: '+${survey.getName()}">Survey Name</h2>
-    <form method="post" th:action="@{/survey/rename}">
-        <input type="hidden" name="id" th:value="${survey.getId()}"/>
-        <p>Name:
-            <label>
-                <input type="text" name="prompt" value="Original Name" th:value="${survey.getName()}"/>
-            </label>
-            <button type="submit">Update</button>
-        </p>
-    </form>
+    <div th:replace="fragments/EditSurveyName::default-name"/>
     <table>
         <thead>
         <tr>

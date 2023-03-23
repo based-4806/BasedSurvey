@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<span th:fragment="default-name" style="display: inline-flex;align-items: center;" hx-target="this" hx-swap="outerHTML">
+    <h2 th:text="${survey.getName()}">Name</h2>
+    <button th:attr="hx-get=@{/survey/htmx/rename/{id}(id=${survey.getId()})}"  >Rename</button>
+</span>
+
+<form th:fragment="rename" th:attr="hx-put=@{/survey/rename/{id}(id=${survey.getId()})}"  hx-target="this" hx-swap="outerHTML">
+    <p>Name:
+        <label>
+            <input type="text" name="name" value="Original Name" th:value="${survey.getName()}"/>
+        </label>
+        <button type="submit">Update</button>
+    </p>
+</form>
+
+</html>
