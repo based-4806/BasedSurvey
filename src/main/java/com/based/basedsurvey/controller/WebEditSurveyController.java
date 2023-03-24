@@ -3,6 +3,7 @@ package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.QuestionTypes;
 import com.based.basedsurvey.repo.QuestionRepository;
 import com.based.basedsurvey.repo.SurveyRepository;
+import lombok.NonNull;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -76,5 +77,21 @@ public class WebEditSurveyController {
         survey.setOpen(enable);
         surveyRepository.save(survey);
         return "redirect:/survey/"+id +"/edit";
+    }
+
+    @GetMapping("survey/htmx/rename/{id}")
+    public String getEditName(@PathVariable long id,Model model){
+        var survey = ControllerHelperClass.getSurvey(id);
+        model.addAttribute("survey",survey);
+        return "fragments/EditSurveyName::rename";
+    }
+
+    @PutMapping("survey/rename/{id}")
+    public String rename(@PathVariable long id, @RequestParam @NonNull String name, Model model){
+        var survey = ControllerHelperClass.getSurvey(id);
+        survey.setName(name);
+        surveyRepository.save(survey);
+        model.addAttribute("survey",survey);
+        return "fragments/EditSurveyName::default-name";
     }
 }
