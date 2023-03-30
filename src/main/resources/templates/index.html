@@ -13,56 +13,22 @@
         <input type="text" id="surveyname" name="name" value="Mysurvey"><br>
         <input type="submit" value="Submit">
     </form>
-    <table>
-        <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Fill</th>
-            <th scope="col">Delete</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Results</th>
-            <th scope="col">Availability</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr th:each="survey: ${surveys}">
-                <td th:text="${survey.getId()}"></td>
-                <th:block th:if="${survey.isOpen()}">
-                    <td><p th:text="${survey.getName()}" /></td>
-                    <td><a th:href="${'/survey/'+ survey.getId()}+'/answer'">Link</a></td>
-                </th:block>
-                <th:block th:if="${!survey.isOpen()}">
-                    <td><div th:replace="fragments/EditSurveyName::default-name" ></div></td>
-                    <td><p>-</p></td>
-                </th:block>
-                <td >
-                    <button hx-confirm="Are you sure you want to delete this based survey?" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" th:attr="hx-delete=@{/survey/{id}(id=${survey.getId()})}">
-                        Delete
-                    </button>
-                </td>
-                <td >
-                    <p th:if="${survey.isOpen()}">Survey cannot be edited</p>
-                    <form th:if="${!survey.isOpen()}" method="get" th:action="@{/survey/{id}/edit(id=${survey.getId()})}" class="inline">
-                        <input type="hidden" name="id" th:value="${survey.getId()}">
-                        <button type="submit" name="submit_param" value="submit_value" class="link-button">
-                            O
-                        </button>
-                    </form>
-                </td>
-                <td >
-                    <form method="get" th:action="@{/survey/{id}/results(id=${survey.getId()})}" class="inline">
-                        <button type="submit" name="submit_param" value="submit_value" class="link-button">
-                            O
-                        </button>
-                    </form>
-                </td>
-                <td>
-                    <p th:text="${survey.isOpen()?'OPEN':'CLOSED'}"/>
-                </td>
+        <table>
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Fill</th>
+                <th scope="col">Delete</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Results</th>
+                <th scope="col">Availability</th>
             </tr>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <tr hx-swap="afterend" hx-trigger="revealed" hx-get="surveys/0"></tr>
+            </tbody>
+        </table>
     <div style="position:fixed; bottom: 0; right: 0;" >
     <h1>Music to enjoy while looking at surveys</h1>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/su1_1bX5NlQ?autoplay=1&mute=0&loop=1" title="Based music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
