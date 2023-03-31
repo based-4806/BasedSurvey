@@ -32,7 +32,7 @@ public class WebSurveyControllerTest {
     @Test
     public void testSurveyList() throws Exception{
         surveyRepository.save(new Survey("Bobby Portis jr"));
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/surveys/0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Bobby Portis jr")));
@@ -54,7 +54,7 @@ public class WebSurveyControllerTest {
         var survey = new Survey("Bobby Portis jr");
         survey.setOpen(true);
         surveyRepository.save(survey);
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/surveys/0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Survey cannot be edited")))
@@ -68,7 +68,7 @@ public class WebSurveyControllerTest {
         var survey = new Survey("Bobby Portis jr");
         survey.setOpen(false);
         surveyRepository.save(survey);
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/surveys/0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(not((containsString("Survey cannot be edited")))))
@@ -99,4 +99,24 @@ public class WebSurveyControllerTest {
                 .andExpect(status().isOk());
         Assertions.assertEquals(size - 1, surveyRepository.findAll().spliterator().estimateSize());
     }
+
+    @Test
+    public void testPagination() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            surveyRepository.save(new Survey("hello " + i));
+        }
+        surveyRepository.save(new Survey("bye"));
+        mockMvc.perform(get("/surveys/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("bye")))
+                .andExpect(content().string(not(containsString("hello"))));
+
+        mockMvc.perform(get("/surveys/0"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(not(containsString("bye"))))
+                .andExpect(content().string(containsString("hello")));
+    }
+
 }
