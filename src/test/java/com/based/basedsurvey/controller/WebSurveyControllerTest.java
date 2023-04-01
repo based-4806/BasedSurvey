@@ -50,30 +50,32 @@ public class WebSurveyControllerTest {
 
     @Test
     @SneakyThrows
-    public void testOpenedSurveyIndex(){
+    public void testSurveyBeingFilledIndex(){
         var survey = new Survey("Bobby Portis jr");
-        survey.setOpen(true);
+        survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         surveyRepository.save(survey);
         mockMvc.perform(get("/surveys/0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Survey cannot be edited")))
-                .andExpect(content().string(containsString("OPEN")))
-                .andExpect(content().string(not(containsString("CLOSED"))));
+                .andExpect(content().string(containsString("BEING FILLED")))
+                .andExpect(content().string(not(containsString("BEING EDITED"))))
+                .andExpect(content().string(not(containsString("FINISHED"))));
     }
 
     @Test
     @SneakyThrows
-    public void testClosedSurveyIndex(){
+    public void testBeingEditedSurveyIndex(){
         var survey = new Survey("Bobby Portis jr");
-        survey.setOpen(false);
+        survey.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         surveyRepository.save(survey);
         mockMvc.perform(get("/surveys/0"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(not((containsString("Survey cannot be edited")))))
-                .andExpect(content().string(containsString("CLOSED")))
-                .andExpect(content().string(not(containsString("OPEN"))));
+                .andExpect(content().string(containsString("BEING EDITED")))
+                .andExpect(content().string(not(containsString("BEING FILLED"))))
+                .andExpect(content().string(not(containsString("FINISHED"))));
     }
 
     @Test
