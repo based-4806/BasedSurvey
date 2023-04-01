@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-<div th:if="${!survey.isOpen()}">
+<div th:if="${survey.getStatus() == T(com.based.basedsurvey.data.Survey.SurveyStatuses).BEING_EDITED}">
   <a th:href="@{/survey/{id}/edit(id=${survey.getId()})}" th:text="'Go back to: '+${survey.getName()}">Survey Info</a>
   <h2 th:text="'Question ID:'+${question.getId()}">Question ID</h2>
   <form method="post" th:action="@{/question/rename}">
@@ -78,8 +78,8 @@
     <p th:case="*" >Question type not implemented</p>
   </div>
 </div>
-<div th:if="${survey.isOpen()}">
-  <p>This survey cannot be edited as it is open!</p>
+<div th:if="${survey.getStatus() == T(com.based.basedsurvey.data.Survey.SurveyStatuses).BEING_FILLED}">
+  <p>This survey cannot be edited as it is being filled!</p>
 </div>
 </body>
 </html>

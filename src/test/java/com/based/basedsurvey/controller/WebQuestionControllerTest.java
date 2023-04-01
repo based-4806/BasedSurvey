@@ -51,6 +51,7 @@ public class WebQuestionControllerTest {
     public void setup(){
         var survey = new Survey();
         survey.setName("Test Survey");
+        survey.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         sr.save(survey);
 
 

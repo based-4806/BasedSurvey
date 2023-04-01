@@ -50,25 +50,40 @@ public class FillSurveyControllerTest {
     }
 
     @Test
-    public void testSurveyIsClosed() throws Exception{
-        // create survey and close it
+    public void testSurveyIsBeingEdited() throws Exception{
+        // create survey and set status to being edited
         String name = "survey1";
         Survey s = new Survey(name);
-        s.setOpen(false);
+        s.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         sr.save(s);
 
         mockMvc.perform(get("/survey/1/answer"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Survey is closed")));
+                .andExpect(content().string(containsString("Survey is being edited")));
     }
+
+    @Test
+    public void testSurveyIsFinished() throws Exception{
+        // create survey and set status to finished
+        String name = "survey1";
+        Survey s = new Survey(name);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
+        sr.save(s);
+
+        mockMvc.perform(get("/survey/1/answer"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Survey is finished")));
+    }
+
 
     @Test
     public void testSurveyHasNoQuestions() throws Exception{
         // create survey with no questions
         String name = "survey2";
         Survey s = new Survey(name);
-        s.setOpen(true);
+        s.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         sr.save(s);
 
         mockMvc.perform(get("/survey/1/answer"))
@@ -112,7 +127,7 @@ public class FillSurveyControllerTest {
         // add questions to a survey
         String name = "survey3";
         Survey s = new Survey(name);
-        s.setOpen(true);
+        s.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         List<Question> questions = new ArrayList<>();
         questions.add(mq);
         questions.add(oq);

@@ -41,31 +41,46 @@ public class WebEditSurveyControllerTest {
 
     @SneakyThrows
     @Test
-    public void testOpen(){
+    public void testBeingFilled(){
         var survey = new Survey();
         survey.setName("Test Survey");
-        survey.setOpen(true);
+        survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         sr.save(survey);
 
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(containsString("This survey cannot be edited as it is open!"))
+                        content().string(containsString("This survey cannot be edited as it is being filled!"))
                 );
     }
 
     @SneakyThrows
     @Test
-    public void testClose(){
+    public void testBeingEdited(){
         var survey = new Survey();
         survey.setName("Test Survey");
-        survey.setOpen(false);
+        survey.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         sr.save(survey);
 
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is open!")))
+                        content().string(not(containsString("This survey cannot be edited as it is being filled!")))
+                );
+    }
+
+    @SneakyThrows
+    @Test
+    public void testFinished(){
+        var survey = new Survey();
+        survey.setName("Test Survey");
+        survey.setStatus(Survey.SurveyStatuses.FINISHED);
+        sr.save(survey);
+
+        this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
+                        status().isOk())
+                .andExpect(
+                        content().string(not(containsString("This survey cannot be edited as it is being filled!")))
                 );
     }
 
@@ -74,7 +89,7 @@ public class WebEditSurveyControllerTest {
     public void testCreate(){
         var survey = new Survey();
         survey.setName("Test Survey");
-        survey.setOpen(false);
+        survey.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         sr.save(survey);
 
         assertEquals(0, sr.findSurveyById(1).getQuestions().size());
@@ -87,7 +102,7 @@ public class WebEditSurveyControllerTest {
     public void testEditQuestionOpen(){
         var survey = new Survey();
         survey.setName("Test Survey");
-        survey.setOpen(true);
+        survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         sr.save(survey);
 
         var question = new MultipleChoiceQuestion();
@@ -98,7 +113,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(containsString("This survey cannot be edited as it is open!"))
+                        content().string(containsString("This survey cannot be edited as it is being filled!"))
                 );
     }
 
@@ -107,7 +122,7 @@ public class WebEditSurveyControllerTest {
     public void testEditQuestionClose(){
         var survey = new Survey();
         survey.setName("Test Survey");
-        survey.setOpen(false);
+        survey.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         sr.save(survey);
 
         var question = new MultipleChoiceQuestion();

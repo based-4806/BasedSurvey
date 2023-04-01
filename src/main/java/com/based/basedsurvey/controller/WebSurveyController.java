@@ -52,32 +52,9 @@ public class WebSurveyController {
         return "";
     }
 
-    @GetMapping("/surveys/{page}")
-    @ResponseBody
-    public String getSurveysHtmxInfiniteLoad(@PathVariable int page){
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
-        List<Survey> surveys = surveyRepository.findAll(pageRequest).getContent();
-
-        StringBuilder result = new StringBuilder();
-        int i = 0;
-        for (Survey survey: surveys) {
-            if(i == pageSize - 1)
-                result.append(paginatedRowHtml.formatted(page + 1));
-            else
-                result.append("<tr>");
-
-            if (survey.isOpen())
-                result.append(formatOpenSurvey(survey));
-            else
-                result.append(formatClosedSurvey(survey));
-            i++;
-        }
-
-        return result.toString();
-    }
 
     @Language("html")
-    final String surveyOpenHtml = """
+    final String surveyBeingFilledHtml = """
                 <td>%d</td>
                 <td><p>%s<p/></td>
                 <td><a href="/survey/%d/answer">Link</a></td>
@@ -94,12 +71,18 @@ public class WebSurveyController {
                         </button>
                     </form>
                 </td>
-                <td>OPEN</td>
+                <td>
+                    <form method="post" action="/survey/finishSurvey">
+                        <input type="hidden" name="id" value="%d">
+                        <button type="submit">Finish</button>
+                    </form>
+                </td>
+                <td>BEING FILLED</td>
             </tr>
             """;
 
     @Language("html")
-    final String surveyClosedHtml = """
+    final String surveyBeingEditedHtml = """
                 <td>%d</td>
                 <td>                 
                     <span style="display: inline-flex;align-items: center;" hx-target="this" hx-swap="outerHTML">
@@ -127,7 +110,36 @@ public class WebSurveyController {
                         </button>
                     </form>
                 </td>
-                <td>CLOSED</td>
+                <td>
+                    <form method="post" action="/survey/finishSurvey">
+                        <input type="hidden" name="id" value="%d">
+                        <button type="submit">Finish</button>
+                    </form>
+                </td>
+                <td>BEING EDITED</td>
+            </tr>
+            """;
+
+    @Language("html")
+    final String surveyFinishedHtml = """
+                <td>%d</td>
+                <td><p>%s<p/></td>
+                <td>Survey cannot be filled</td>
+                <td>
+                    <button hx-confirm="Are you sure you want to delete this based survey?" hx-target="closest tr" hx-swap="outerHTML" hx-trigger="click" hx-delete="/survey/%d">
+                    Delete
+                    </button>
+                </td>
+                <td>Survey cannot be edited</td>
+                <td>                   
+                    <form method="get" action="/survey/%d/results" class="inline">
+                        <button type="submit" name="submit_param" value="submit_value" class="link-button">
+                            O
+                        </button>
+                    </form>
+                </td>
+                <td>Survey finished</td>
+                <td>FINISHED</td>
             </tr>
             """;
 
@@ -137,15 +149,40 @@ public class WebSurveyController {
     """;
 
     private String formatClosedSurvey(Survey survey){
-        return surveyClosedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+        return surveyBeingFilledHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
     }
 
     private String formatClosedSurvey(Survey survey, boolean newSurvey){
-        if(newSurvey) return surveyClosedHtml.formatted(survey.getId(), survey.getName() + "<span class='newSurvey'> new! </span>", survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+        if(newSurvey) return surveyBeingFilledHtml.formatted(survey.getId(), survey.getName() + "<span class='newSurvey'> new! </span>", survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
         else return formatClosedSurvey(survey);
     }
 
-    private String formatOpenSurvey(Survey survey){
-        return surveyOpenHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId());
+
+    @GetMapping("/surveys/{page}")
+    @ResponseBody
+    public String getSurveysHtmxInfiniteLoad(@PathVariable int page){
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
+        List<Survey> surveys = surveyRepository.findAll(pageRequest).getContent();
+
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        for (Survey survey: surveys) {
+            if(i == pageSize - 1)
+                result.append(paginatedRowHtml.formatted(page + 1));
+            else
+                result.append("<tr>");
+
+            if (survey.getStatus() == Survey.SurveyStatuses.BEING_FILLED){
+                result.append(surveyBeingFilledHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId()));
+            } else if (survey.getStatus() == Survey.SurveyStatuses.BEING_EDITED){
+                result.append(surveyBeingEditedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId()));
+            } else{
+                result.append(surveyFinishedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId()));
+            }
+            i++;
+        }
+
+        return result.toString();
     }
+
 }

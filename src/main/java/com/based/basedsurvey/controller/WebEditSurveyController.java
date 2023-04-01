@@ -1,6 +1,7 @@
 package com.based.basedsurvey.controller;
 
 import com.based.basedsurvey.data.QuestionTypes;
+import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.QuestionRepository;
 import com.based.basedsurvey.repo.SurveyRepository;
 import lombok.NonNull;
@@ -28,6 +29,7 @@ public class WebEditSurveyController {
         var survey = ControllerHelperClass.getSurvey(id);
         model.addAttribute("questions", questionRepository.findAllBySurveyId(survey.getId()));
         model.addAttribute("survey", survey);
+        model.addAttribute("surveyStatus", survey.getStatus());
         return "newSurvey";
     }
 
@@ -72,11 +74,19 @@ public class WebEditSurveyController {
     }
 
     @PostMapping("survey/openSurvey")
-    public String enableButtons(@RequestParam long id, @RequestParam boolean enable) {
+    public String enableButtons(@RequestParam long id) {
         var survey = ControllerHelperClass.getSurvey(id);
-        survey.setOpen(enable);
+        survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         surveyRepository.save(survey);
         return "redirect:/survey/"+id +"/edit";
+    }
+
+    @PostMapping("survey/finishSurvey")
+    public String finishSurvey(@RequestParam long id) {
+        var survey = ControllerHelperClass.getSurvey(id);
+        survey.setStatus(Survey.SurveyStatuses.FINISHED);
+        surveyRepository.save(survey);
+        return "redirect:/";
     }
 
     @GetMapping("survey/htmx/rename/{id}")
