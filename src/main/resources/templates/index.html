@@ -8,10 +8,12 @@
     <title>Based Survey</title>
 </head>
 <body>
-    <form method="post" th:action="@{/survey/create}">
-        <label for="surveyname">Create a new survey:</label><br>
-        <input type="text" id="surveyname" name="name" value="Mysurvey"><br>
-        <input type="submit" value="Submit">
+    <form hx-post="/survey/create" hx-swap="afterbegin" hx-target="tbody">
+        <label>
+            Create a new survey:
+            <input name="name" type="text" value="Mysurvey">
+            <input type="submit" value="Submit">
+        </label>
     </form>
         <table>
             <thead>
@@ -33,5 +35,6 @@
     <h1>Music to enjoy while looking at surveys</h1>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/su1_1bX5NlQ?autoplay=1&mute=0&loop=1" title="Based music" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
     </div>
+    <script data-num-rows="1" src="https://s3-us-west-2.amazonaws.com/kaboodle/kaboodle.js" type="text/javascript"></script>
 </body>
 </html>
