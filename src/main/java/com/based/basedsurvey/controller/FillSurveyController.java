@@ -1,26 +1,32 @@
 package com.based.basedsurvey.controller;
 import com.based.basedsurvey.data.*;
+import com.based.basedsurvey.repo.QuestionRepository;
 import com.based.basedsurvey.repo.SurveyRepository;
 import lombok.extern.java.Log;
 import org.intellij.lang.annotations.Language;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 @Log
 @Controller
 public class FillSurveyController {
 
-    private SurveyRepository surveyRepository;
+    SurveyRepository surveyRepository;
+    QuestionRepository questionRepository;
+
+    private final int pageSize = 3;
+
 
     @Autowired
-    public FillSurveyController(SurveyRepository surveyRepository) {
+    public FillSurveyController(SurveyRepository surveyRepository, QuestionRepository questionRepository) {
         this.surveyRepository = surveyRepository;
+        this.questionRepository = questionRepository;
     }
 
     @GetMapping("/survey/{surveyID}/answer")
@@ -52,29 +58,38 @@ public class FillSurveyController {
             model.addAttribute("issue", "Survey has no questions");
             return "SurveyFillIssue";
         }
+        return "Answer";
+    }
+
+    @GetMapping("/survey/{surveyID}/answer/{page}")
+    @ResponseBody
+    public String getAnswer(@PathVariable Long surveyID, @PathVariable int page, Model model) {
 
         // formInputs will contain a dynamically generated string with all the html form inputs
-        String formInputs = "";
+        StringBuilder formInputs = new StringBuilder();
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
+
+        var questions = questionRepository.findAllBySurveyId(surveyID, pageRequest).getContent();
+        if (questions.isEmpty()) return ""; // to prevent infinite requests from pages that have 0 elements
 
         // for each question in survey
-        for (Question q : s.getQuestions()) {
+        for (Question q : questions) {
 
             // case 1, the question is a multiple choice question
             if (q instanceof MultipleChoiceQuestion) {
-                formInputs += getMultipleChoiceInputs((MultipleChoiceQuestion) q);
+                formInputs.append(getMultipleChoiceInputs((MultipleChoiceQuestion) q));
 
                 // case 2, the question is an open answer question
             } else if (q instanceof OpenAnswerQuestion) {
-                formInputs += getOpenAnswerInput((OpenAnswerQuestion) q);
+                formInputs.append(getOpenAnswerInput((OpenAnswerQuestion) q));
 
                 // case 3, the question is a range question
             } else if (q instanceof RangeQuestion) {
-                formInputs += getRangeInput((RangeQuestion) q);
+                formInputs.append(getRangeInput((RangeQuestion) q));
             }
         }
-
-        model.addAttribute("questions", formInputs);
-        return "Answer";
+        formInputs.append(getPaginateHtml(surveyID, page + 1));
+        return formInputs.toString();
     }
 
     // side note, html forms can't send patch requests and I used post instead
@@ -101,6 +116,7 @@ public class FillSurveyController {
         return "redirect:/";
     }
 
+
     /**
      * Adds the response to a question
      * @param q the question to add the response to
@@ -121,6 +137,16 @@ public class FillSurveyController {
             rangeAnswer.getResponses().add(Float.parseFloat(value));
         }
     }
+
+    private static String getPaginateHtml(Long surveyId, int page){
+        @Language("html")
+        final String paginateHtml = """
+        <div hx-get="/survey/%d/answer/%d" hx-swap="afterend" hx-trigger="revealed"></div>
+    """.formatted(surveyId,page);
+        return paginateHtml;
+    }
+
+
 
     /**
      * Generates the HTML inputs for a multiple choice question

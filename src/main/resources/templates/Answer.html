@@ -4,6 +4,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
   <link rel="stylesheet" th:href="@{/based.css}"/>
+  <script type="text/javascript" th:src="@{/webjars/htmx.org/1.8.6/dist/htmx.min.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/hyperscript.org/0.9.8/dist/_hyperscript.js}"></script>
   <title>Fill out survey</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
@@ -12,9 +14,7 @@
 <h1 th:text="${surveyName}"></h1>
 
 <form action="#" th:action="@{'/survey/'+${surveyID}+'/answer'}" th:object="${response}" method="post">
-  <div>
-    [(${questions})]
-  </div>
+  <div th:attr="hx-get=@{/survey/{id}/answer/0(id =${surveyID})}" hx-swap="afterend" hx-trigger="revealed" ></div>
   <p><input type="submit" value="Submit Answers" /></p>
 </form>
 <br>

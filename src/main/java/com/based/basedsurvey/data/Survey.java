@@ -2,6 +2,7 @@ package com.based.basedsurvey.data;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,7 @@ public class Survey {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Question> questions = new ArrayList<>();
 
-    public int yo = 2;
-    public Survey(String name){
+    public Survey(@NotNull String name){
         this.name = name;
         this.status = SurveyStatuses.BEING_EDITED;
     }
