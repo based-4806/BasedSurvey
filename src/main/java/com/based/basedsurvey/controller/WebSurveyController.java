@@ -32,9 +32,11 @@ public class WebSurveyController {
     }
 
     @PostMapping("survey/create")
-    public String createSurvey(@RequestParam String name) {
-        surveyRepository.save(new Survey(name));
-        return "redirect:/";
+    @ResponseBody
+    public String createSurveys(@RequestParam String name) {
+        Survey survey = new Survey(name);
+        surveyRepository.save(survey);
+        return "<tr >" + formatClosedSurvey(survey, true);
     }
 
     @PostMapping("survey/delete")
@@ -48,6 +50,30 @@ public class WebSurveyController {
     public String deleteSurveyHtmx(@PathVariable long id){
         surveyRepository.deleteById(id);
         return "";
+    }
+
+    @GetMapping("/surveys/{page}")
+    @ResponseBody
+    public String getSurveysHtmxInfiniteLoad(@PathVariable int page){
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
+        List<Survey> surveys = surveyRepository.findAll(pageRequest).getContent();
+
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        for (Survey survey: surveys) {
+            if(i == pageSize - 1)
+                result.append(paginatedRowHtml.formatted(page + 1));
+            else
+                result.append("<tr>");
+
+            if (survey.isOpen())
+                result.append(formatOpenSurvey(survey));
+            else
+                result.append(formatClosedSurvey(survey));
+            i++;
+        }
+
+        return result.toString();
     }
 
     @Language("html")
@@ -110,27 +136,16 @@ public class WebSurveyController {
         <tr hx-swap="afterend" hx-trigger="revealed" hx-get="surveys/%d">
     """;
 
-    @GetMapping("/surveys/{page}")
-    @ResponseBody
-    public String getSurveysHtmxInfiniteLoad(@PathVariable int page){
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
-        List<Survey> surveys = surveyRepository.findAll(pageRequest).getContent();
+    private String formatClosedSurvey(Survey survey){
+        return surveyClosedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+    }
 
-        StringBuilder result = new StringBuilder();
-        int i = 0;
-        for (Survey survey: surveys) {
-            if(i == pageSize - 1)
-                result.append(paginatedRowHtml.formatted(page + 1));
-            else
-                result.append("<tr>");
+    private String formatClosedSurvey(Survey survey, boolean newSurvey){
+        if(newSurvey) return surveyClosedHtml.formatted(survey.getId(), survey.getName() + "<span class='newSurvey'> new! </span>", survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+        else return formatClosedSurvey(survey);
+    }
 
-            if (survey.isOpen())
-                result.append(surveyOpenHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId()));
-            else
-                result.append(surveyClosedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId()));
-            i++;
-        }
-
-        return result.toString();
+    private String formatOpenSurvey(Survey survey){
+        return surveyOpenHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId());
     }
 }
