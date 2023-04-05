@@ -149,6 +149,6 @@ public class WebEditSurveyControllerTest {
         mockMvc.perform(post("/question/create").param("surveyID", "1").param("qt", "MULTIPLE_CHOICE").param("prompt", "Test").param("additionalInfo", "TestInfo"))
                 .andExpect(content().string(containsString("Survey is not open for editing")))
                 .andExpect(status().isOk());
-        assertEquals(1, sr.findSurveyById(1).getQuestions().size());
+        assertEquals(0, sr.findSurveyById(1).getQuestions().size());
     }
 }
