@@ -136,4 +136,19 @@ public class WebEditSurveyControllerTest {
                         content().string(not(containsString("Associated survey is not open for editing")))
                 );
     }
+
+    @SneakyThrows
+    @Test
+    public void testUneditingCreate(){
+        var survey = new Survey();
+        survey.setName("Test Survey");
+        survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
+        sr.save(survey);
+
+        assertEquals(0, sr.findSurveyById(1).getQuestions().size());
+        mockMvc.perform(post("/question/create").param("surveyID", "1").param("qt", "MULTIPLE_CHOICE").param("prompt", "Test").param("additionalInfo", "TestInfo"))
+                .andExpect(content().string(containsString("Survey is not open for editing")))
+                .andExpect(status().isOk());
+        assertEquals(1, sr.findSurveyById(1).getQuestions().size());
+    }
 }
