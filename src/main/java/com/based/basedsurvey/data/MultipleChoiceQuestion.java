@@ -21,8 +21,4 @@ public class MultipleChoiceQuestion extends Question{
     @EqualsAndHashCode.Exclude
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> responses = new ArrayList<>();
-
-    public List<String> getOptions(){
-        return options;
-    }
 }
