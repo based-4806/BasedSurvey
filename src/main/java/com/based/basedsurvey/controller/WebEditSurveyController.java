@@ -1,5 +1,6 @@
 package com.based.basedsurvey.controller;
 
+import com.based.basedsurvey.data.MultipleChoiceQuestion;
 import com.based.basedsurvey.data.QuestionTypes;
 import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.QuestionRepository;
@@ -78,6 +79,15 @@ public class WebEditSurveyController {
         var survey = ControllerHelperClass.getSurvey(id);
         survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
         surveyRepository.save(survey);
+        for (var question : survey.getQuestions()) {
+            if (question instanceof MultipleChoiceQuestion) {
+                var mcQuestion = (MultipleChoiceQuestion) question;
+                if (mcQuestion.getOptions().isEmpty()) {
+                    survey.getQuestions().remove(mcQuestion);
+                    questionRepository.delete(mcQuestion);
+                }
+            }
+        }
         return "redirect:/survey/"+id +"/edit";
     }
 
