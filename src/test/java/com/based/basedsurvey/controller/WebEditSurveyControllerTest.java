@@ -50,7 +50,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(containsString("This survey cannot be edited as it is being filled!"))
+                        content().string(containsString("This survey cannot be edited as it is being filled or finished!"))
                 );
     }
 
@@ -65,7 +65,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is being filled!")))
+                        content().string(not(containsString("This survey cannot be edited as it is being filled or finished!")))
                 );
     }
 
@@ -80,7 +80,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is being filled!")))
+                        content().string(containsString("This survey cannot be edited as it is being filled or finished!"))
                 );
     }
 
@@ -113,7 +113,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(containsString("This survey cannot be edited as it is being filled!"))
+                        content().string(containsString("Associated survey is not open for editing"))
                 );
     }
 
@@ -133,7 +133,22 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is open!")))
+                        content().string(not(containsString("Associated survey is not open for editing")))
                 );
+    }
+
+    @SneakyThrows
+    @Test
+    public void testUneditingCreate(){
+        var survey = new Survey();
+        survey.setName("Test Survey");
+        survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
+        sr.save(survey);
+
+        assertEquals(0, sr.findSurveyById(1).getQuestions().size());
+        mockMvc.perform(post("/question/create").param("surveyID", "1").param("qt", "MULTIPLE_CHOICE").param("prompt", "Test").param("additionalInfo", "TestInfo"))
+                .andExpect(content().string(containsString("Survey is not open for editing")))
+                .andExpect(status().isOk());
+        assertEquals(0, sr.findSurveyById(1).getQuestions().size());
     }
 }

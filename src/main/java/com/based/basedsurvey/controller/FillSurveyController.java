@@ -104,6 +104,18 @@ public class FillSurveyController {
 
         Survey s = this.surveyRepository.findSurveyById(surveyID);
 
+        // if survey is still being edited
+        if (s.getStatus() == Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("issue", "Survey is being edited");
+            return "SurveyFillIssue";
+        }
+
+        // if survey is still finished
+        if (s.getStatus() == Survey.SurveyStatuses.FINISHED) {
+            model.addAttribute("issue", "Survey is finished");
+            return "SurveyFillIssue";
+        }
+
         // for each question in survey add the response
         for (int index = 0; index < s.getQuestions().size(); index += 1) {
             Question q = s.getQuestions().get(index);

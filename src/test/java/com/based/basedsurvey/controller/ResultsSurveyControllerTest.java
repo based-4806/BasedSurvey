@@ -41,12 +41,44 @@ public class ResultsSurveyControllerTest {
     public void testEmptyQuestionResults() throws Exception{
         String name = "survey1";
         Survey s = new Survey(name);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
         mockMvc.perform(get("/survey/1/results"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(name)))
                 .andExpect(content().string(containsString("Survey has no questions")));
+    }
+
+    @Test
+    public void testUnfinishedSurvey() throws Exception{
+        List<Question> questions = new ArrayList<>();
+        OpenAnswerQuestion q = new OpenAnswerQuestion();
+        String prompt = "Enter some text:";
+        q.setPrompt(prompt);
+        String additionalInfo = "this project is based";
+        q.setAdditionalInfo(additionalInfo);
+
+        List<String> responses = new ArrayList<>();
+        String response1 = "aaaaaaaaaaa";
+        String response2 = "bbbbbbbbbbb";
+        String response3 = "75867920137";
+        responses.add(response1);
+        responses.add(response2);
+        responses.add(response3);
+        q.setResponses(responses);
+
+        questions.add(q);
+        String name = "survey1";
+        Survey s = new Survey(name);
+        s.setQuestions(questions);
+        surveyRepository.save(s);
+
+        mockMvc.perform(get("/survey/1/results"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(name)))
+                .andExpect(content().string(containsString("Survey is not finished")));
     }
 
     @Test
@@ -69,6 +101,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         s.setQuestions(questions);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
 
         mockMvc.perform(get("/survey/1/results"))
@@ -94,6 +127,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         s.setQuestions(questions);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
 
         mockMvc.perform(get("/survey/1/results"))
@@ -119,6 +153,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         s.setQuestions(questions);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
 
         mockMvc.perform(get("/survey/1/results"))
@@ -158,6 +193,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         s.setQuestions(questions);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
 
         mockMvc.perform(get("/survey/1/results"))
@@ -192,6 +228,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         s.setQuestions(questions);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
 
         mockMvc.perform(get("/survey/1/results"))
@@ -227,6 +264,7 @@ public class ResultsSurveyControllerTest {
         String name = "survey1";
         Survey s = new Survey(name);
         s.setQuestions(questions);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
         surveyRepository.save(s);
 
         mockMvc.perform(get("/survey/1/results"))
