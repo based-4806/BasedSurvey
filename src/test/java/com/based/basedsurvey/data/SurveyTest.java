@@ -38,7 +38,7 @@ public class SurveyTest {
         //test attributes
         assertEquals("My Survey", survey.getName());
         assertEquals(0, survey.getQuestions().size());
-        assertFalse(survey.isOpen());
+        assertEquals(survey.getStatus(), Survey.SurveyStatuses.BEING_EDITED);
         //add questions to survey
         survey.getQuestions().add(openQuestion());
         survey.getQuestions().add(multiQuestion());
@@ -74,9 +74,9 @@ public class SurveyTest {
         //find all by survey id
         assertEquals(3, qr.findAllBySurveyId(survey.getId()).size());
         //close survey
-        survey.setOpen(false);
+        survey.setStatus(Survey.SurveyStatuses.BEING_EDITED);
         sr.save(survey);
-        assertFalse(sr.findAll().iterator().next().isOpen());
+        assertEquals(sr.findAll().iterator().next().getStatus(), Survey.SurveyStatuses.BEING_EDITED);
 
         // remove questions from survey
         survey.getQuestions().remove(0);

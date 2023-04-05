@@ -62,9 +62,9 @@ on unix systems
 Go to the based homepage and start using it
 
 ## Database Schema
-![db_schema](https://user-images.githubusercontent.com/72260849/223790794-3fad6401-026b-4901-a7bd-83114ca2df52.png)
+![db_schema](documentation/Milestone3dbschema.png)
 ## UML for Model
-![Milestone1DataUml](https://user-images.githubusercontent.com/72260849/223790843-0f70ca34-015c-4355-bd9d-903476dca5a4.png)
+![db_schema](documentation/Milestone3DataUML.png)
 
 
 ## Early Prototype Progress

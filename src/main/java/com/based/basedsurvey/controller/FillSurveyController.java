@@ -35,9 +35,15 @@ public class FillSurveyController {
         Survey s = this.surveyRepository.findSurveyById(surveyID);
         model.addAttribute("surveyName", s.getName());
 
-        // if survey is closed
-        if (!s.isOpen()) {
-            model.addAttribute("issue", "Survey is closed");
+        // if survey is still being edited
+        if (s.getStatus() == Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("issue", "Survey is being edited");
+            return "SurveyFillIssue";
+        }
+
+        // if survey is still finished
+        if (s.getStatus() == Survey.SurveyStatuses.FINISHED) {
+            model.addAttribute("issue", "Survey is finished");
             return "SurveyFillIssue";
         }
 

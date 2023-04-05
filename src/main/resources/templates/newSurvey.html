@@ -14,14 +14,13 @@
     </style>
 </head>
 <body>
-<div th:if="${!survey.isOpen()}">
+<div th:if="${survey.getStatus() == T(com.based.basedsurvey.data.Survey.SurveyStatuses).BEING_EDITED}">
     <h1>Edit Survey</h1>
 
     <form method="post" th:action="@{/survey/openSurvey}">
         <input type="hidden" name="id" th:value="${survey.getId()}"/>
-        <input type="hidden" name="enable" th:value="${!survey.isOpen()}"/>
         <p>Open Survey:
-            <button type="submit" th:text="${survey.isOpen()?'close survey':'open survey'}">Open</button>
+            <button type="submit">Open</button>
         </p>
     </form>
 
@@ -66,8 +65,8 @@
             <button type="submit">Add</button></p>
     </form>
 </div>
-<div th:if="${survey.isOpen()}">
-    <p>This survey cannot be edited as it is open!</p>
+<div th:if="${survey.getStatus() == T(com.based.basedsurvey.data.Survey.SurveyStatuses).BEING_FILLED}">
+    <p>This survey cannot be edited as it is being filled!</p>
 </div>
 
 <button type="button">
