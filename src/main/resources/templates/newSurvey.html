@@ -68,5 +68,10 @@
 <div th:if="${survey.getStatus() == T(com.based.basedsurvey.data.Survey.SurveyStatuses).BEING_FILLED}">
     <p>This survey cannot be edited as it is being filled!</p>
 </div>
+
+<button type="button">
+    <a th:href="@{/}">Return Home</a>
+</button>
+
 </body>
 </html>
