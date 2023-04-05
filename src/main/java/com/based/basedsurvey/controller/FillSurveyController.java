@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.List;
+import java.util.Map;
 
 @Log
 @Controller
@@ -73,7 +73,7 @@ public class FillSurveyController {
 
     // side note, html forms can't send patch requests and I used post instead
     @PostMapping("/survey/{surveyID}/answer")
-    public String postAnswer(@PathVariable Long surveyID, @RequestParam List<String> values, Model model) {
+    public String postAnswer(@PathVariable Long surveyID, @RequestParam Map<String, String> allParams, Model model) {
 
         // if survey does not exist
         if (!surveyRepository.existsById(surveyID)) {
@@ -86,7 +86,7 @@ public class FillSurveyController {
         // for each question in survey add the response
         for (int index = 0; index < s.getQuestions().size(); index += 1) {
             Question q = s.getQuestions().get(index);
-            addResponse(q, values.get(index));
+            addResponse(q, allParams.get("values" + q.getId()));
         }
 
         surveyRepository.save(s);
@@ -127,7 +127,7 @@ public class FillSurveyController {
         s += "<h3> " + q.getPrompt() + " </h3>";
         if (!q.getAdditionalInfo().isEmpty()) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
         for (String option : (q).getOptions()) {
-            s += "<input type=\"radio\" id=\"" + option + "\" name=\"values\" checked=\"checked\" value=\"" + option + "\">";
+            s += "<input type=\"radio\" id=\"" + option + "\" name=\"values" + q.getId() + "\" checked=\"checked\" value=\"" + option + "\">";
             s += "<label for=\"" + option + "\">" + option + "</label><br>";
         }
         s += "<br>";
@@ -144,7 +144,7 @@ public class FillSurveyController {
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
         if (!q.getAdditionalInfo().isEmpty()) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
-        s += "<input type=\"text\" id=\"values\" name=\"values\"><br>";
+        s += "<input type=\"text\" id=\"values\" name=\"values" + q.getId() + "\"><br>";
         return s;
     }
 
@@ -158,7 +158,7 @@ public class FillSurveyController {
         String s = "<hr>";
         s += "<h3>" + q.getPrompt() + "</h3>";
         if (!q.getAdditionalInfo().isEmpty()) s += "additional notes: " + q.getAdditionalInfo() + "<br>";
-        s += "<input type=\"range\" name=\"values\" value=\"" + (q).getLow() + "\" min=\"" + (q).getLow() + "\" max=\"" + (q).getHigh() + "\" step=\"0.1\" oninput=\"this.nextElementSibling.value = this.value\">\n";
+        s += "<input type=\"range\" name=\"values" + q.getId() + "\" value=\"" + (q).getLow() + "\" min=\"" + (q).getLow() + "\" max=\"" + (q).getHigh() + "\" step=\"0.1\" oninput=\"this.nextElementSibling.value = this.value\">\n";
         s += "<output>" + (q).getLow() + "</output>";
         return s;
     }

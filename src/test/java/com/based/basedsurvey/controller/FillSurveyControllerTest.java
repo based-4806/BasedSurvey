@@ -120,6 +120,10 @@ public class FillSurveyControllerTest {
         s.setQuestions(questions);
         sr.save(s);
 
+        String param1 = "values" + mq.getId();
+        String param2 = "values" + oq.getId();
+        String param3 = "values" + rq.getId();
+
         // get the page to fill out the survey and expect it contains all the question prompts
         this.mockMvc.perform(get("/survey/1/answer")).andDo(print())
                 .andExpect(content().string(containsString("Is this project super based or ultra based?:")))
@@ -131,9 +135,9 @@ public class FillSurveyControllerTest {
                 .andExpect(status().isOk());
 
         // post 3 sets of responses to the survey
-        this.mockMvc.perform(post("/survey/1/answer").param("values","super based", "its really based", "-5")).andExpect(status().isFound());
-        this.mockMvc.perform(post("/survey/1/answer").param("values","super based", "its giga based", "9")).andExpect(status().isFound());
-        this.mockMvc.perform(post("/survey/1/answer").param("values","ultra based", "its mega based", "10")).andExpect(status().isFound());
+        this.mockMvc.perform(post("/survey/1/answer").param(param1,"super based").param(param2,"its really based").param(param3,"-5")).andExpect(status().isFound());
+        this.mockMvc.perform(post("/survey/1/answer").param(param1,"super based").param(param2,"its giga based").param(param3,"9")).andExpect(status().isFound());
+        this.mockMvc.perform(post("/survey/1/answer").param(param1,"ultra based").param(param2,"its mega based").param(param3,"10")).andExpect(status().isFound());
 
         // for each question check if the responses were actually added
         MultipleChoiceQuestion q1 = (MultipleChoiceQuestion) qr.findById(1);
