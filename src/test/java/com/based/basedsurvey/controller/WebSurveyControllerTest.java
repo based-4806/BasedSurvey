@@ -43,8 +43,8 @@ public class WebSurveyControllerTest {
         long size = surveyRepository.findAll().spliterator().estimateSize();
         mockMvc.perform(post("/survey/create").param("name", "based"))
                 .andDo(print())
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("based")));
         Assertions.assertEquals(size + 1, surveyRepository.findAll().spliterator().estimateSize());
     }
 

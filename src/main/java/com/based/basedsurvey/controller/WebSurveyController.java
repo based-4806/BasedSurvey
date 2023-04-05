@@ -32,9 +32,11 @@ public class WebSurveyController {
     }
 
     @PostMapping("survey/create")
-    public String createSurvey(@RequestParam String name) {
-        surveyRepository.save(new Survey(name));
-        return "redirect:/";
+    @ResponseBody
+    public String createSurveys(@RequestParam String name) {
+        Survey survey = new Survey(name);
+        surveyRepository.save(survey);
+        return "<tr >" + formatBeingEditedSurvey(survey, true);
     }
 
     @PostMapping("survey/delete")
@@ -48,6 +50,32 @@ public class WebSurveyController {
     public String deleteSurveyHtmx(@PathVariable long id){
         surveyRepository.deleteById(id);
         return "";
+    }
+
+    @GetMapping("/surveys/{page}")
+    @ResponseBody
+    public String getSurveysHtmxInfiniteLoad(@PathVariable int page){
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
+        List<Survey> surveys = surveyRepository.findAll(pageRequest).getContent();
+
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        for (Survey survey: surveys) {
+            if(i == pageSize - 1)
+                result.append(paginatedRowHtml.formatted(page + 1));
+            else
+                result.append("<tr>");
+
+            if (survey.getStatus() == Survey.SurveyStatuses.BEING_FILLED)
+                result.append(formatBeingFilledSurvey(survey));
+            else if(survey.getStatus() == Survey.SurveyStatuses.BEING_EDITED)
+                result.append(formatBeingEditedSurvey(survey));
+            else
+                result.append(formatFinishedSurvey(survey));
+            i++;
+        }
+
+        return result.toString();
     }
 
     @Language("html")
@@ -145,30 +173,20 @@ public class WebSurveyController {
         <tr hx-swap="afterend" hx-trigger="revealed" hx-get="surveys/%d">
     """;
 
-    @GetMapping("/surveys/{page}")
-    @ResponseBody
-    public String getSurveysHtmxInfiniteLoad(@PathVariable int page){
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("id").ascending());
-        List<Survey> surveys = surveyRepository.findAll(pageRequest).getContent();
+    private String formatBeingEditedSurvey(Survey survey){
+        return surveyBeingEditedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+    }
 
-        StringBuilder result = new StringBuilder();
-        int i = 0;
-        for (Survey survey: surveys) {
-            if(i == pageSize - 1)
-                result.append(paginatedRowHtml.formatted(page + 1));
-            else
-                result.append("<tr>");
+    private String formatBeingEditedSurvey(Survey survey, boolean newSurvey){
+        if(newSurvey) return surveyBeingEditedHtml.formatted(survey.getId(), survey.getName() + "<span class='newSurvey'> new! </span>", survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+        else return formatBeingEditedSurvey(survey);
+    }
 
-            if (survey.getStatus() == Survey.SurveyStatuses.BEING_FILLED){
-                result.append(surveyBeingFilledHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId()));
-            } else if (survey.getStatus() == Survey.SurveyStatuses.BEING_EDITED){
-                result.append(surveyBeingEditedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId(), survey.getId()));
-            } else{
-                result.append(surveyFinishedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId()));
-            }
-            i++;
-        }
+    private String formatBeingFilledSurvey(Survey survey){
+        return surveyBeingFilledHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId(), survey.getId(), survey.getId());
+    }
 
-        return result.toString();
+    private String formatFinishedSurvey(Survey survey){
+        return surveyFinishedHtml.formatted(survey.getId(), survey.getName(), survey.getId(), survey.getId());
     }
 }
