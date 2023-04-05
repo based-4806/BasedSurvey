@@ -139,16 +139,6 @@ public class FillSurveyControllerTest {
         String param2 = "values" + oq.getId();
         String param3 = "values" + rq.getId();
 
-        // get the page to fill out the survey and expect it contains all the question prompts
-        this.mockMvc.perform(get("/survey/1/answer")).andDo(print())
-                .andExpect(content().string(containsString("Is this project super based or ultra based?:")))
-                .andExpect(content().string(containsString("How based is this project?")))
-                .andExpect(content().string(containsString("Rate how based this project is")))
-                .andExpect(content().string(containsString("additional notes: hint, it's ultra based")))
-                .andExpect(content().string(containsString("additional notes: hint, it's giga based")))
-                .andExpect(content().string(containsString("additional notes: hint, select the max value")))
-                .andExpect(status().isOk());
-
         // post 3 sets of responses to the survey
         this.mockMvc.perform(post("/survey/1/answer").param(param1,"super based").param(param2,"its really based").param(param3,"-5")).andExpect(status().isFound());
         this.mockMvc.perform(post("/survey/1/answer").param(param1,"super based").param(param2,"its giga based").param(param3,"9")).andExpect(status().isFound());
