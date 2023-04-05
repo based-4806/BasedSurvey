@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -169,5 +170,137 @@ public class FillSurveyControllerTest {
         assertEquals(-5.0f, q3.getResponses().get(0), 0.0);
         assertEquals(9.0f, q3.getResponses().get(1), 0.0);
         assertEquals(10.0f, q3.getResponses().get(2), 0.0);
+    }
+
+    @Test
+    public void testFillEditingSurvey() throws Exception {
+        // create multiple choice question
+        MultipleChoiceQuestion mq = new MultipleChoiceQuestion();
+        String prompt1 = "Is this project super based or ultra based?:";
+        mq.setPrompt(prompt1);
+        String additionalInfo1 = "hint, it's ultra based";
+        mq.setAdditionalInfo(additionalInfo1);
+        String choice1 = "super based";
+        String choice2 = "ultra based";
+
+        List<String> choices = new ArrayList<>();
+        choices.add(choice1);
+        choices.add(choice2);
+        mq.setOptions(choices);
+
+        // create open answer question
+        OpenAnswerQuestion oq = new OpenAnswerQuestion();
+        String prompt2 = "How based is this project?";
+        oq.setPrompt(prompt2);
+        String additionalInfo2 = "hint, it's giga based";
+        oq.setAdditionalInfo(additionalInfo2);
+
+        // create range question
+        RangeQuestion rq = new RangeQuestion();
+        String prompt3 = "Rate how based this project is";
+        rq.setPrompt(prompt3);
+        String additionalInfo3 = "hint, select the max value";
+        rq.setAdditionalInfo(additionalInfo3);
+        rq.setLow(-10);
+        rq.setHigh(10);
+
+        // add questions to a survey
+        String name = "survey3";
+        Survey s = new Survey(name);
+        s.setStatus(Survey.SurveyStatuses.BEING_EDITED);
+        List<Question> questions = new ArrayList<>();
+        questions.add(mq);
+        questions.add(oq);
+        questions.add(rq);
+        s.setQuestions(questions);
+        sr.save(s);
+
+        String param1 = "values" + mq.getId();
+        String param2 = "values" + oq.getId();
+        String param3 = "values" + rq.getId();
+
+        // post a response to the survey
+        this.mockMvc.perform(post("/survey/1/answer")
+                        .param(param1,"super based")
+                        .param(param2,"its really based")
+                        .param(param3,"-5"))
+                .andExpect(content().string(containsString("Survey is being edited")))
+                .andExpect(status().isOk());
+
+        // for each question check if the responses were actually added
+        MultipleChoiceQuestion q1 = (MultipleChoiceQuestion) qr.findById(1);
+        assertTrue(q1.getResponses().isEmpty());
+
+        OpenAnswerQuestion q2 = (OpenAnswerQuestion) qr.findById(2);
+        assertTrue(q2.getResponses().isEmpty());
+
+        RangeQuestion q3 = (RangeQuestion) qr.findById(3);
+        assertTrue(q3.getResponses().isEmpty());
+    }
+
+    @Test
+    public void testFillFinishedSurvey() throws Exception {
+        // create multiple choice question
+        MultipleChoiceQuestion mq = new MultipleChoiceQuestion();
+        String prompt1 = "Is this project super based or ultra based?:";
+        mq.setPrompt(prompt1);
+        String additionalInfo1 = "hint, it's ultra based";
+        mq.setAdditionalInfo(additionalInfo1);
+        String choice1 = "super based";
+        String choice2 = "ultra based";
+
+        List<String> choices = new ArrayList<>();
+        choices.add(choice1);
+        choices.add(choice2);
+        mq.setOptions(choices);
+
+        // create open answer question
+        OpenAnswerQuestion oq = new OpenAnswerQuestion();
+        String prompt2 = "How based is this project?";
+        oq.setPrompt(prompt2);
+        String additionalInfo2 = "hint, it's giga based";
+        oq.setAdditionalInfo(additionalInfo2);
+
+        // create range question
+        RangeQuestion rq = new RangeQuestion();
+        String prompt3 = "Rate how based this project is";
+        rq.setPrompt(prompt3);
+        String additionalInfo3 = "hint, select the max value";
+        rq.setAdditionalInfo(additionalInfo3);
+        rq.setLow(-10);
+        rq.setHigh(10);
+
+        // add questions to a survey
+        String name = "survey3";
+        Survey s = new Survey(name);
+        s.setStatus(Survey.SurveyStatuses.FINISHED);
+        List<Question> questions = new ArrayList<>();
+        questions.add(mq);
+        questions.add(oq);
+        questions.add(rq);
+        s.setQuestions(questions);
+        sr.save(s);
+
+        String param1 = "values" + mq.getId();
+        String param2 = "values" + oq.getId();
+        String param3 = "values" + rq.getId();
+
+        // post a response to the survey
+        this.mockMvc.perform(post("/survey/1/answer")
+                        .param(param1,"super based")
+                        .param(param2,"its really based")
+                        .param(param3,"-5"))
+                .andExpect(content().string(containsString("Survey is finished")))
+                .andExpect(status().isOk());
+
+        // for each question check if the responses were actually added
+        MultipleChoiceQuestion q1 = (MultipleChoiceQuestion) qr.findById(1);
+        assertTrue(q1.getResponses().isEmpty());
+
+        OpenAnswerQuestion q2 = (OpenAnswerQuestion) qr.findById(2);
+        assertTrue(q2.getResponses().isEmpty());
+
+        RangeQuestion q3 = (RangeQuestion) qr.findById(3);
+        assertTrue(q3.getResponses().isEmpty());
     }
 }

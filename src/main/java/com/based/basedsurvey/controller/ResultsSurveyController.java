@@ -33,6 +33,12 @@ public class ResultsSurveyController {
         Survey s = this.surveyRepository.findSurveyById(surveyID);
         model.addAttribute("surveyName", s.getName());
 
+        // if survey is not finished
+        if (s.getStatus() != Survey.SurveyStatuses.FINISHED) {
+            model.addAttribute("issue", "Survey is not finished");
+            return "SurveyResultsIssue";
+        }
+
         // if survey has no questions
         if (s.getQuestions().isEmpty()) {
             model.addAttribute("issue", "Survey has no questions");

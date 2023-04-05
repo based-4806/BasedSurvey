@@ -27,14 +27,24 @@ public class WebQuestionController {
     @GetMapping(path = "question/{id}")
     public String editQuestion(@PathVariable("id") long id, Model model) {
         var question = ControllerHelperClass.getQuestion(id);
+        if (question.getSurvey().getStatus() != Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("surveyName", question.getSurvey().getName());
+            model.addAttribute("issue", "Associated survey is not open for editing");
+            return "QuestionError";
+        }
         fillModel(model, question);
 
         return "EditQuestion";
     }
 
     @PostMapping("question/rename")
-    public String editName(@RequestParam String prompt, @RequestParam long id) {
+    public String editName(@RequestParam String prompt, @RequestParam long id, Model model) {
         var question = ControllerHelperClass.getQuestion(id);
+        if (question.getSurvey().getStatus() != Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("surveyName", question.getSurvey().getName());
+            model.addAttribute("issue", "Associated survey is not open for editing");
+            return "QuestionError";
+        }
         question.setPrompt(prompt);
         questionRepository.save(question);
 
@@ -42,8 +52,13 @@ public class WebQuestionController {
     }
 
     @PostMapping("question/changeInfo")
-    public String editAdditionalInfo(@RequestParam String info, @RequestParam long id) {
+    public String editAdditionalInfo(@RequestParam String info, @RequestParam long id, Model model) {
         var question = ControllerHelperClass.getQuestion(id);
+        if (question.getSurvey().getStatus() != Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("surveyName", question.getSurvey().getName());
+            model.addAttribute("issue", "Associated survey is not open for editing");
+            return "QuestionError";
+        }
         question.setAdditionalInfo(info);
         questionRepository.save(question);
 
@@ -51,8 +66,13 @@ public class WebQuestionController {
     }
 
     @PostMapping("question/removeOption")
-    public String removeOption(@RequestParam int optionIndex, @RequestParam long id) {
+    public String removeOption(@RequestParam int optionIndex, @RequestParam long id, Model model) {
         var mcq = getMCQ(id);
+        if (mcq.getSurvey().getStatus() != Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("surveyName", mcq.getSurvey().getName());
+            model.addAttribute("issue", "Associated survey is not open for editing");
+            return "QuestionError";
+        }
         var options = mcq.getOptions();
         if(optionIndex>=options.size()){
             throw new IllegalArgumentException(optionIndex+" is out of range of "+options.size());
@@ -65,8 +85,13 @@ public class WebQuestionController {
     }
 
     @PostMapping("question/addOption")
-    public String addOption(@RequestParam @NonNull String option, @RequestParam long id){
+    public String addOption(@RequestParam @NonNull String option, @RequestParam long id, Model model){
         var mcq = getMCQ(id);
+        if (mcq.getSurvey().getStatus() != Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("surveyName", mcq.getSurvey().getName());
+            model.addAttribute("issue", "Associated survey is not open for editing");
+            return "QuestionError";
+        }
         mcq.getOptions().add(option);
 
         questionRepository.save(mcq);
@@ -74,8 +99,13 @@ public class WebQuestionController {
     }
 
     @PostMapping("question/setBounds")
-    public String setBounds(@RequestParam float lower, @RequestParam float upper, @RequestParam long id){
+    public String setBounds(@RequestParam float lower, @RequestParam float upper, @RequestParam long id, Model model){
         var rq = getRQ(id);
+        if (rq.getSurvey().getStatus() != Survey.SurveyStatuses.BEING_EDITED) {
+            model.addAttribute("surveyName", rq.getSurvey().getName());
+            model.addAttribute("issue", "Associated survey is not open for editing");
+            return "QuestionError";
+        }
         if(upper<lower){
             upper = lower;
         }

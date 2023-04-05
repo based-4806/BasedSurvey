@@ -50,7 +50,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(containsString("This survey cannot be edited as it is being filled!"))
+                        content().string(containsString("This survey cannot be edited as it is being filled or finished!"))
                 );
     }
 
@@ -65,7 +65,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is being filled!")))
+                        content().string(not(containsString("This survey cannot be edited as it is being filled or finished!")))
                 );
     }
 
@@ -80,7 +80,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/survey/1/edit")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is being filled!")))
+                        content().string(containsString("This survey cannot be edited as it is being filled or finished!"))
                 );
     }
 
@@ -113,7 +113,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(containsString("This survey cannot be edited as it is being filled!"))
+                        content().string(containsString("Associated survey is not open for editing"))
                 );
     }
 
@@ -133,7 +133,7 @@ public class WebEditSurveyControllerTest {
         this.mockMvc.perform(get("/question/1")).andDo(print()).andExpect(
                         status().isOk())
                 .andExpect(
-                        content().string(not(containsString("This survey cannot be edited as it is open!")))
+                        content().string(not(containsString("Associated survey is not open for editing")))
                 );
     }
 }
