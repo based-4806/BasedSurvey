@@ -1,5 +1,6 @@
 package com.based.basedsurvey.controller;
 
+import com.based.basedsurvey.data.MultipleChoiceQuestion;
 import com.based.basedsurvey.data.QuestionTypes;
 import com.based.basedsurvey.data.Survey;
 import com.based.basedsurvey.repo.QuestionRepository;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @Log
 @Controller
@@ -77,6 +80,9 @@ public class WebEditSurveyController {
     public String enableButtons(@RequestParam long id) {
         var survey = ControllerHelperClass.getSurvey(id);
         survey.setStatus(Survey.SurveyStatuses.BEING_FILLED);
+        var empties = survey.getQuestions().stream().filter(question -> (question instanceof MultipleChoiceQuestion) && (((MultipleChoiceQuestion) question).getOptions().isEmpty()) ).collect(Collectors.toList());
+        questionRepository.deleteAll(empties);
+        survey.getQuestions().removeAll(empties);
         surveyRepository.save(survey);
         return "redirect:/survey/"+id +"/edit";
     }
