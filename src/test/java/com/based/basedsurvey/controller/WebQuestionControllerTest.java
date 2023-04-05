@@ -228,7 +228,7 @@ public class WebQuestionControllerTest {
                         status().isOk()).andExpect(
                         content().string(not(containsString("Question type not implemented"))))
                 .andExpect(
-                        content().string(containsString("Nothing else is needed for this type of question"))
+                        content().string(containsString("Associated survey is not open for editing"))
                 );
 
         // rename
